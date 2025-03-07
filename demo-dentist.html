@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="side-panel">
 	<head>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 		<!-- Basic -->
 		<meta charset="utf-8">
@@ -24,6 +25,7 @@
 
 		<!-- Vendor CSS -->
 		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="vendor/fontawesome-free/css/all.min.css">
 		<link rel="stylesheet" href="vendor/animate/animate.compat.css">
 		<link rel="stylesheet" href="vendor/simple-line-icons/css/simple-line-icons.min.css">
@@ -53,6 +55,7 @@
 	<body data-plugin-cursor-effect data-plugin-page-transition>
 		
 		<div class="body">
+
 			<script>
 				fetch('header.html')
 					.then(response => response.text())
@@ -61,75 +64,27 @@
 					});
 			</script>
 
+			
+
+
 			<div role="main" class="main">
 
 				<div class="p-relative">
-					<div class="owl-carousel owl-carousel-light owl-carousel-light-init-fadeIn owl-theme manual nav-style-1 nav-arrows-thin nav-font-size-lg custom-nav-1 custom-nav-1-pos-1 p-relative mb-0" data-plugin-options="{'autoplay': true, 'autoplayTimeout': 7000}" data-dynamic-height="['calc(100vh - 305px)','calc(100vh - 305px)','calc(100vh - 305px)','calc(100vh - 305px)','calc(100vh - 305px)']" style="height: calc(100vh - 305px);">
-						<div class="owl-stage-outer">
-							<div class="owl-stage">
-
-								<!-- Carousel Slide 1 -->
-								<div class="owl-item p-relative overflow-hidden">
-									<div class="background-image-wrapper p-absolute d-none d-lg-block w-100 h-100 top-0 right-0 bottom-0" style="background-image: url(img/demos/dentist/slides/slide-dentist-1-1.jpg); background-size: cover; max-width: 50vw;"></div>
-
-									<div class="background-image-wrapper p-absolute w-100 h-100 top-0 left-0 bottom-0" style="background-image: url(img/demos/dentist/slides/slide-dentist-1-2.jpg); background-size: cover; max-width: 50vw;"></div>
-
-									<div class="container p-relative z-index-3 h-100">
-										<div class="row align-items-center h-100">
-											<div class="col-lg-8 col-xl-6 text-center text-md-start">
-												<h2 class="font-weight-semi-bold text-color-dark text-9 text-md-12 line-height-2 mb-3 appear-animation" data-appear-animation="fadeInUpShorterPlus" data-appear-animation-delay="200" data-plugin-options="{'minWindowWidth': 0}">Affordable Full-Service Dental Care in LA</h2>
-												<p class="font-weight-medium text-4-5 line-height-5 mb-2 appear-animation" data-appear-animation="fadeInUpShorterPlus" data-appear-animation-delay="400" data-plugin-options="{'minWindowWidth': 0}">Lorem ipsum dolor sit amet, consectetur adipiscing elit vestibulum sed euismod dui.</p>
-											</div>
-										</div>
-									</div>
+					
+						<div class="row d-flex flex-md-row flex-column align-items-center doctor-card">
+								<div class="col-md-6 text-center text-md-start">
+										<h1 style="font-weight: bold; margin: 0px; color: black; font-size: 28px;">Dr. Kiran Buddaraju</h1>
+										<p style="color: black; font-size: 20px;">MBBS, MD, DM</p>
+										<p style="font-size: medium;">Dr. Kiran Buddaraju is a highly skilled neurosurgeon with 14 years of experience in diagnosing and treating complex neurological conditions. Specializing in brain and spinal surgeries, he is known for his precision, expertise, and patient-centered approach. Dr. Buddaraju is committed to utilizing advanced neurosurgical techniques and minimally invasive procedures to ensure the best possible outcomes. His dedication to continuous learning and innovation has earned him a strong reputation in the field, making him a trusted name for patients seeking top-tier neurological care.</p>
 								</div>
-
-								<!-- Carousel Slide 2 -->
-								<div class="owl-item p-relative overflow-hidden">
-									<div class="background-image-wrapper p-absolute d-none d-lg-block w-100 h-100 top-0 right-0 bottom-0" style="background-image: url(img/demos/dentist/slides/slide-dentist-2-1.jpg); background-size: cover;"></div>
-
-									<div class="container p-relative z-index-3 h-100">
-										<div class="row align-items-center justify-content-end h-100">
-											<div class="col-lg-8 col-xl-6 text-center text-md-start">
-												<h2 class="font-weight-semi-bold text-color-dark text-9 text-md-12 line-height-2 mb-3 appear-animation" data-appear-animation="fadeInUpShorterPlus" data-appear-animation-delay="200" data-plugin-options="{'minWindowWidth': 0}">Dental Care in LA Affordable Full-Service</h2>
-												<p class="font-weight-medium text-4-5 line-height-5 mb-2 appear-animation" data-appear-animation="fadeInUpShorterPlus" data-appear-animation-delay="400" data-plugin-options="{'minWindowWidth': 0}">Lorem ipsum dolor sit amet, consectetur adipiscing elit vestibulum sed euismod dui.</p>
-											</div>
-										</div>
-									</div>
+								<div class="col-md-6 text-center mt-3">
+										<img src="img/kiran_logo-removebg.png" alt="Dr. Kiran Buddaraju" class="doctor-img">
+										<a href="#" class="btn btn-primary btn-lg mt-3">Book an Appointment</a>
 								</div>
-
-							</div>
 						</div>
-						<div class="owl-nav">
-							<button type="button" role="presentation" class="owl-prev" aria-label="Previous"></button>
-							<button type="button" role="presentation" class="owl-next" aria-label="Next"></button>
-						</div>
-					</div>
-
-					<div class="p-absolute custom-el-pos-1 d-none d-xl-block z-index-2">
-						<img width="353" height="407" src="img/demos/dentist/generic/generic-3.svg" alt="" data-icon data-plugin-options="{'onlySVG': true, 'extraClass': 'svg-fill-color-tertiary'}" />
-					</div>
-
-					<div class="p-absolute custom-el-pos-2 rotate-l-65 d-none d-xl-block z-index-2">
-						<img width="330" height="346" src="img/demos/dentist/generic/generic-4.svg" alt="" data-icon data-plugin-options="{'onlySVG': true, 'extraClass': 'svg-fill-color-primary'}" />
-					</div>
 				</div>
-
-				<div id="home-intro" class="home-intro bg-primary p-relative z-index-3 m-0">
-					<div class="container py-2">
-						<div class="row align-items-center text-center text-md-start">
-							<div class="col-lg-9 mb-3 mb-lg-0">
-								<p class="text-color-light text-4-5 font-weight-medium line-height-4 mb-0">
-									<strong>Book Appointment Online</strong> - Need Immediate Confirmation? Call Us at <u>888-123-4567</u>
-								</p>
-							</div>
-							<div class="col-lg-3 text-center text-md-start text-lg-end">
-								<a href="demo-dentist-contact.html#book" class="btn btn-secondary border-0 text-3-5 font-weight-semi-bold btn-px-5 btn-py-3">Book Appointment</a>
-							</div>
-						</div>
-					</div>
-				</div>
-
+	
+	
 				<div class="container my-5">
 					<div class="row">
 						<div class="col py-4">
@@ -631,8 +586,33 @@
 		<!-- Theme Initialization Files -->
 		<script src="js/theme.init.js"></script>
 
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-	
+<style>
+	.container {
+    max-width: 100%; /* Makes it take more space */
+    transform-origin: center; /* Keeps it centered */
+}
+
+.doctor-card {
+    width: 120%; /* Increases width */
+    height: auto; /* Ensures it adjusts dynamically */
+    min-height: 500px; /* Sets a minimum height */
+    padding: 40px; /* Adds internal spacing */
+}
+
+.doctor-img {
+    max-width: 100%; /* Increases image size */
+    height: auto;
+}
+
+.btn-primary {
+    font-size: 32px; /* Increases button text size */
+    padding: 20px 40px; /* Enlarges button */
+}
+
+
+</style>
+
 	</body>
 </html>
