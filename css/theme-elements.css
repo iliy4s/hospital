@@ -26,6 +26,12 @@ Theme Version:	10.1.0
 	font-size: 16px;
 }
 
+.text-primary-hover:hover { color: var(--bs-primary) !important; }
+.text-success-hover:hover { color: var(--bs-success) !important; }
+.text-danger-hover:hover { color: var(--bs-danger) !important; }
+
+
+
 .accordion .card-header {
 	padding: 0;
 	border-radius: .25rem;
