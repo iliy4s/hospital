@@ -1,18 +1,32 @@
 <?php 
+session_start();
+require 'connect.php';
+
 // Initialize variables to retain form values after submission
 $patientFirstName = $patientLastName = $patientPreferredName = $contactNumber = $email = '';
 $dobMonth = $dobDay = $dobYear = $preferredSpecialty = $reasonForAppointment = '';
 $errors = [];
 $formSubmitted = false;
 
-// Get the selected date and time from query parameters
-$selectedDate = isset($_GET['date']) ? $_GET['date'] : '';
-$selectedTime = isset($_GET['time']) ? $_GET['time'] : '';
+// Store appointment date and time in session from URL parameters if provided
+if (isset($_GET['date']) && isset($_GET['time'])) {
+    $_SESSION['appointment_date'] = $_GET['date'];
+    $_SESSION['appointment_time'] = $_GET['time'];
+}
+
+// Get appointment details from session
+$appointmentDate = $_SESSION['appointment_date'] ?? '';
+$appointmentTime = $_SESSION['appointment_time'] ?? '';
+
+// Display error or redirect if session data is missing
+if (!$appointmentDate || !$appointmentTime) {
+    die("Appointment date and time are required.");
+}
 
 // Format the selected date for display
 $formattedDate = '';
-if (!empty($selectedDate)) {
-    $dateObj = new DateTime($selectedDate);
+if (!empty($appointmentDate)) {
+    $dateObj = new DateTime($appointmentDate);
     $formattedDate = $dateObj->format('l, F j, Y'); // e.g., Monday, March 10, 2025
 }
 
@@ -78,18 +92,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $reasonForAppointment = test_input($_POST['reasonForAppointment']);
     }
 
-    // Save the appointment details
-    $appointmentDate = test_input($_POST['appointmentDate'] ?? '');
-    $appointmentTime = test_input($_POST['appointmentTime'] ?? '');
-
     // If no errors, process the form submission
     if (empty($errors)) {
-        $formSubmitted = true;
-        // Here you would typically:
-        // 1. Save to database
-        // 2. Send confirmation email
-        // 3. Redirect to a thank you page
-        // For this example, we'll just display a success message
+        // Format the date of birth
+        $dob = $dobYear . '-' . sprintf('%02d', $dobMonth) . '-' . sprintf('%02d', $dobDay);
+        
+        // Check if the selected slot is already booked
+        $checkSlotQuery = "SELECT * FROM appointments WHERE appointment_date = ? AND appointment_time = ?";
+        $stmt = $conn->prepare($checkSlotQuery);
+        $stmt->bind_param("ss", $appointmentDate, $appointmentTime);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $errors['appointmentSlot'] = 'This time slot is already booked. Please select another time.';
+        } else {
+            // Insert data into the database
+            $insertQuery = "INSERT INTO appointments (appointment_date, appointment_time, patient_first_name, patient_last_name, patient_preferred_name, dob, contact_number, email, preferred_specialty, reason_for_appointment) 
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $conn->prepare($insertQuery);
+            $stmt->bind_param("ssssssssss", 
+                $appointmentDate, 
+                $appointmentTime, 
+                $patientFirstName, 
+                $patientLastName,
+                $patientPreferredName,
+                $dob, 
+                $contactNumber, 
+                $email,
+                $preferredSpecialty,
+                $reasonForAppointment
+            );
+
+            if ($stmt->execute()) {
+                $formSubmitted = true;
+            } else {
+                $errors['database'] = 'Failed to submit the appointment. Please try again.';
+            }
+        }
     }
 }
 
@@ -158,24 +199,22 @@ $specialties = [
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <h2 class="text-2xl font-bold mb-2 text-green-600">Appointment Request Submitted</h2>
-                <p class="mb-6 text-gray-600">Thank you, <?php echo htmlspecialchars($patientFirstName); ?>! We'll contact you shortly to confirm your appointment for <?php echo htmlspecialchars($appointmentDate); ?> at <?php echo htmlspecialchars($appointmentTime); ?>.</p>
-                <a href="index.php" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Return to Home</a>
+                <p class="mb-6 text-gray-600">Thank you, <?php echo htmlspecialchars($patientFirstName); ?>! We'll contact you shortly to confirm your appointment for <?php echo htmlspecialchars($formattedDate); ?> at <?php echo htmlspecialchars($appointmentTime); ?>.</p>
+                <a href="slot-booking.php" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Return to Home</a>
             </div>
         <?php else: ?>
             <!-- Appointment Summary -->
-            <?php if (!empty($selectedDate) && !empty($selectedTime)): ?>
-                <div class="appointment-summary">
-                    <h3 class="text-lg font-bold mb-2">Appointment Details</h3>
-                    <p>Date: <span class="appointment-date"><?php echo htmlspecialchars($formattedDate); ?></span> Time: <span class="appointment-time"><?php echo htmlspecialchars($selectedTime); ?></span></p>
-                </div>
-            <?php endif; ?>
+            <div class="appointment-summary">
+                <h3 class="text-lg font-bold mb-2">Appointment Details</h3>
+                <p>Date: <span class="appointment-date"><?php echo htmlspecialchars($formattedDate); ?></span> Time: <span class="appointment-time"><?php echo htmlspecialchars($appointmentTime); ?></span></p>
+            </div>
 
             <h2 class="text-xl font-bold mb-4 text-center">Patient Information</h2>
-            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . (!empty($selectedDate) && !empty($selectedTime) ? "?date=$selectedDate&time=$selectedTime" : "")); ?>">
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                 <!-- Hidden fields to preserve appointment information -->
-                <input type="hidden" name="appointmentDate" value="<?php echo htmlspecialchars($selectedDate); ?>">
-                <input type="hidden" name="appointmentTime" value="<?php echo htmlspecialchars($selectedTime); ?>">
-                
+                <input type="hidden" name="appointmentDate" value="<?php echo htmlspecialchars($appointmentDate); ?>">
+                <input type="hidden" name="appointmentTime" value="<?php echo htmlspecialchars($appointmentTime); ?>">
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <!-- First Name -->
                     <div>
@@ -244,7 +283,7 @@ $specialties = [
                         <label for="contactNumber" class="block mb-1 font-medium text-gray-700">Contact Number *</label>
                         <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo htmlspecialchars($contactNumber); ?>" 
                             class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['contactNumber']) ? 'is-invalid border-red-500' : ''; ?>" 
-                            placeholder="(123) 456-7890">
+                            placeholder="Contact number">
                         <?php if (isset($errors['contactNumber'])): ?>
                             <div class="error-message"><?php echo $errors['contactNumber']; ?></div>
                         <?php endif; ?>
@@ -285,6 +324,13 @@ $specialties = [
                         <div class="error-message"><?php echo $errors['reasonForAppointment']; ?></div>
                     <?php endif; ?>
                 </div>
+                
+                <!-- General error message for appointment slot -->
+                <?php if (isset($errors['appointmentSlot'])): ?>
+                    <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                        <?php echo $errors['appointmentSlot']; ?>
+                    </div>
+                <?php endif; ?>
                 
                 <!-- Submit Button -->
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium transition">
