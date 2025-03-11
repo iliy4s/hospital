@@ -29,6 +29,9 @@ Theme Version:	10.1.0
 .text-primary-hover:hover { color: var(--bs-primary) !important; }
 .text-success-hover:hover { color: var(--bs-success) !important; }
 .text-danger-hover:hover { color: var(--bs-danger) !important; }
+.bg-blue {
+	background-color: #88bbcc;
+}
 
 
 
