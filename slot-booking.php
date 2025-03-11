@@ -315,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <div class="modal">
-    <a href="index.php" class="close-button">×</a>
+    <button class="close-button" onclick="window.location.href='index-one-page.html';">×</button>
     <h1>What time works best for a quick call?</h1>
     
     <form id="scheduleForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
@@ -355,7 +355,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       </div>
       
-      <button type="submit" class="submit-button" id="continue-button" disabled>Continue to Patient Details</button>
+      <button type="submit" class="submit-button" id="continue-button" disabled >Continue to Patient Details</button>
       
       <div class="footer">
         <span class="logo">Dr. Kiran Hospitals</span>
