@@ -1,145 +1,183 @@
 body {
     font-family: Arial, sans-serif;
-}
-
-.working-hour-section {
-    display: flex;
-    justify-content: flex-start; /* Align to the leftmost side */
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    flex-wrap: wrap;
-    margin: 0; /* Ensure no margin is affecting alignment */
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     display: flex;
     width: 100%;
-    flex-wrap: wrap;
-    align-items: flex-start; /* Align items at the start */
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.working-hours, .introduction, .image-section {
-    flex: 1;
-    padding: 20px;
-    background-color: #003366; /* Dark blue for working-hours */
+/* Working Hours Section */
+.working-hours {
+    width: 30%;
+    background-color: #1e3c72;
     color: white;
-    border-radius: 8px;
-    margin: 10px;
+    padding: 40px 30px;
+    box-sizing: border-box;
+    border-radius: 10px;
 }
 
-.introduction {
-    background-color: #f5f5f5; /* Light grey for introduction */
-    color: #000; /* Black text for introduction */
-}
-
-.image-section {
-    background-color: transparent; /* No background color for image section */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.working-hours h4, .introduction h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+.working-hours h4 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
 }
 
 .hour {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .day {
-    flex: 2;
+    font-size: 16px;
 }
 
 .time {
-    flex: 1;
+    font-size: 16px;
 }
 
 .book-now {
-    background-color: white;
-    color: #003366; /* Dark blue */
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    text-align: right;
 }
 
-.book-now:hover {
-    background-color: #f0f0f0;
+.book-now a {
+    color: white;
+    text-decoration: none;
 }
 
 .flexible-time {
-    margin-top: 20px;
+    margin-top: 40px;
+    text-align: center;
 }
 
 .flexible-time h6 {
-    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.flexible-time p {
+    margin-bottom: 20px;
 }
 
 .buttons {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
+    gap: 15px;
 }
 
 .btn {
     background-color: white;
-    color: #003366; /* Dark blue */
-    padding: 10px;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 10px;
+    color: #1e3c72;
+    padding: 15px;
     text-align: center;
+    text-decoration: none;
+    border-radius: 3px;
+    font-weight: bold;
+    display: block;
 }
 
-.center-img { /* To make img responsive */
-    max-width: 115%;
-    height: 475px;
-    border-radius: 8px;
+.emergency {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+/* Image Section */
+.image-section {
+    width: 34%;
+    margin: 10px;
+    height: 80%;
+    margin-right: -10px;
+    margin-top: 130px;
+}
+
+.center-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Introduction Section */
+.introduction {
+    width: 30%;
+    margin-top: -40px;
+    padding: 40px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.introduction h1 {
+    color: #1e3c72;
+    font-size: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.introduction h1:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: #1e3c72;
+}
+
+.introduction p {
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.introduction ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.introduction li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.introduction li:before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #1e3c72;
+}
+
+.introduction h6 {
+    font-size: 18px;
+    margin-top: auto;
+    margin-bottom: 5px;
+    color: #1e3c72;
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    .working-hour-section {
-        flex-direction: column;
-        padding: 10px;
-    }
-
+@media (max-width: 992px) {
     .container {
         flex-direction: column;
     }
-
-    .working-hours, .introduction, .image-section {
-        margin: 10px 0;
-        padding: 10px;
+    
+    .working-hours, .image-section, .introduction {
         width: 100%;
     }
-
-    .introduction {
-        margin-left: 0;
-    }
-
-    .hour {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .book-now {
-        margin-top: 10px;
-    }
-
-    .buttons {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    .btn {
-        flex: 1;
-        margin: 5px;
+    
+    .image-section {
+        height: 300px;
     }
 }
