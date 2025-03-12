@@ -366,7 +366,7 @@ if ($result) {
 </head>
 <body>
   <div class="modal">
-    <button class="close-button" onclick="window.location.href='index-one-page.html';">×</button>
+    <button class="close-button" onclick="window.location.href='index-one-page.php';">×</button>
     <h1>What time works best for a quick call?</h1>
     
     <form id="scheduleForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
