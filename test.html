@@ -1,618 +1,98 @@
 <!DOCTYPE html>
-<html lang="en" class="side-panel">
-	<head>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Kiran Neuro Centre</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .working-hours {
+            background-color: #1e3c72;
+        }
+        .introduction h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #1e3c72;
+        }
+        .custom-dash::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: #1e3c72;
+        }
+    </style>
+</head>
+<body>
 
-		<!-- Basic -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row">
+            <!-- Working Hours Section -->
+            <div class="col-lg-4">
+                <div class="working-hours text-white p-4 rounded">
+                    <h4 class="text-center border-bottom border-white border-opacity-25 pb-3 mb-4">Working Hours</h4>
+                    
+                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
+                        <div>Mon - Tues</div>
+                        <div>9AM - 5PM</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
+                        <div>Wed - Thu</div>
+                        <div>9AM - 5PM</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
+                        <div>Fri - Sat</div>
+                        <div>9AM - 5PM</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
+                        <div>Sun</div>
+                        <div>9AM - 5PM</div>
+                    </div>
 
-		<title>Dr.kiran</title>	
+                    <div class="text-center mt-5">
+                        <h6 class="fs-5 mb-2">Time's not Flexible?</h6>
+                        <p class="mb-4">Call us and book an appointment with</p>
+                    </div>
 
-		<meta name="keywords" content="WebSite Template" />
-		<meta name="description" content="Porto - Multipurpose Website Template">
-		<meta name="author" content="okler.net">
+                    <div class="d-grid gap-3">
+                        <a href="#" class="btn btn-light fw-bold">ONLINE APPOINTMENT</a>
+                        <a href="#" class="btn btn-outline-light fw-bold">CALL FOR EMERGENCY</a>
+                    </div>
+                </div>
+            </div>
 
-		<!-- Favicon -->
-			<link rel="shortcut icon" href="img/demos/dentist/klogo.png" type="image/x-icon" />
-		<link rel="apple-touch-icon" href="img/demos/dentist/klogo.png">
+            <!-- Image Section -->
+            <div class="col-lg-4">
+                <div class="mt-5">
+                    <img src="img/hospital-interir.jpg" alt="working hours" class="img-fluid rounded w-100 h-100 object-fit-cover">
+                </div>
+            </div>
 
-		<!-- Mobile Metas -->
-		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+            <!-- Introduction Section -->
+            <div class="col-lg-4">
+                <div class="p-4 fw-bold">
+                    <h1 class="text-primary position-relative pb-2 mb-4" style="color: #1e3c72 !important;">Introduction</h1>
+                    <p class="text-muted">Dr. Kiran Neuro Centre is committed to delivering world-class, compassionate care for all neurological needs. We specialize in advanced diagnostics, personalized treatments, and innovative neurorehabilitation, ensuring the best outcomes with a patient-first approach. Your health is our priority—experience expert care with us.</p>
 
-		<!-- Web Fonts  -->
-		<link id="googleFonts" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap" rel="stylesheet" type="text/css">
+                    <ul class="list-unstyled my-4">
+                        <li class="position-relative ps-4 mb-2 text-muted custom-dash">20+ Years of Experience</li>
+                        <li class="position-relative ps-4 mb-2 text-muted custom-dash">Best Neurology Hospital In Bhimavaram</li>
+                    </ul>
+                    
+                    <h6 class="fs-5 mb-2" style="color: #1e3c72;">Dr. Kiran Neuro Centre</h6>
+                    <p class="text-muted">Team of Dr. Kiran Neuro Centre</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-		<!-- Vendor CSS -->
-		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="vendor/fontawesome-free/css/all.min.css">
-		<link rel="stylesheet" href="vendor/animate/animate.compat.css">
-		<link rel="stylesheet" href="vendor/simple-line-icons/css/simple-line-icons.min.css">
-		<link rel="stylesheet" href="vendor/owl.carousel/assets/owl.carousel.min.css">
-		<link rel="stylesheet" href="vendor/owl.carousel/assets/owl.theme.default.min.css">
-		<link rel="stylesheet" href="vendor/magnific-popup/magnific-popup.min.css">
-		<link rel="stylesheet" href="vendor/twentytwenty/css/twentytwenty.css">
-
-		<!-- Theme CSS -->
-		<link rel="stylesheet" href="css/theme.css">
-		<link rel="stylesheet" href="css/theme-elements.css">
-		<link rel="stylesheet" href="css/theme-blog.css">
-		<link rel="stylesheet" href="css/theme-shop.css">
-
-		<!-- Demo CSS -->
-		<link rel="stylesheet" href="css/demos/demo-dentist.css">
-
-		<!-- Skin CSS -->
-		<link id="skinCSS" rel="stylesheet" href="css/skins/skin-dentist.css">
-
-		<!-- Theme Custom CSS -->
-		<link rel="stylesheet" href="css/custom.css">
-
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-		<link rel="stylesheet" href="css/demo-dentist/style.css">
-	</head>
-	<body data-plugin-cursor-effect data-plugin-page-transition>
-		
-		<div class="body">
-
-			<script>
-				fetch('header.html')
-					.then(response => response.text())
-					.then(data => {
-						document.querySelector('body').insertAdjacentHTML('afterbegin', data);
-					});
-			</script>
-
-			
-
-
-			<div role="main" class="main">
-
-				<div class="p-relative">
-					
-						<div class="row d-flex flex-md-row flex-column align-items-center doctor-card">
-								<div class="col-md-6 text-center text-md-start">
-										<h1 style="font-weight: bold; margin: 0px; color: black; font-size: 28px;">Dr. Kiran Buddaraju</h1>
-										<p style="color: black; font-size: 20px;">MBBS, MD, DM</p>
-										<p style="font-size: medium;">Dr. Kiran Buddaraju is a highly skilled neurosurgeon with 14 years of experience in diagnosing and treating complex neurological conditions. Specializing in brain and spinal surgeries, he is known for his precision, expertise, and patient-centered approach. Dr. Buddaraju is committed to utilizing advanced neurosurgical techniques and minimally invasive procedures to ensure the best possible outcomes. His dedication to continuous learning and innovation has earned him a strong reputation in the field, making him a trusted name for patients seeking top-tier neurological care.</p>
-								</div>
-								<div class="col-md-6 text-center mt-3">
-										<img src="img/kiran_logo-removebg.png" alt="Dr. Kiran Buddaraju" class="doctor-img">
-										<a href="#" class="btn btn-primary btn-lg mt-3">Book an Appointment</a>
-								</div>
-						</div>
-				</div>
-	
-	
-				<div class="container my-5">
-					<div class="row">
-						<div class="col py-4">
-
-							<div class="featured-boxes featured-boxes-style-9">
-								<div class="row">
-									<div class="col-lg-4 px-lg-3">
-										<div class="featured-box featured-box-primary">
-											<div class="box-content">
-												<span class="icon-featured icon-featured-lg">
-													<img height="100" src="img/demos/dentist/icons/icon-1.svg" alt="" data-icon data-plugin-options="{'onlySVG': true, 'extraClass': 'svg-fill-color-tertiary mt-1'}" />
-												</span>
-												<h4 class="font-weight-semi-bold mt-3 pt-2 mb-3 text-5-5 text-color-dark">Convenient Location</h4>
-												<p class="mb-0 text-3-5 font-weight-medium">Lorem ipsum dolor sit amet, consec tetur adipiscing el nc viverra erat orcias ac auctor.</p>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-4 px-lg-3">
-										<div class="featured-box featured-box-secondary">
-											<div class="box-content">
-												<span class="icon-featured icon-featured-lg">
-													<img height="100" src="img/demos/dentist/icons/icon-2.svg" alt="" data-icon data-plugin-options="{'onlySVG': true, 'extraClass': 'svg-fill-color-tertiary mt-1'}" />
-												</span>
-												<h4 class="font-weight-semi-bold mt-3 pt-2 mb-3 text-5-5 text-color-dark">Full-Service</h4>
-												<p class="mb-0 text-3-5 font-weight-medium">Lorem ipsum dolor sit amet, con sectetur adipiscing el nc viverra eratorci ac auctor.</p>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-4 px-lg-3">
-										<div class="featured-box featured-box-tertiary">
-											<div class="box-content">
-												<span class="icon-featured icon-featured-lg">
-													<img height="100" src="img/demos/dentist/icons/icon-3.svg" alt="" data-icon data-plugin-options="{'onlySVG': true, 'extraClass': 'svg-fill-color-tertiary mt-1'}" />
-												</span>
-												<h4 class="font-weight-semi-bold mt-3 pt-2 mb-3 text-5-5 text-color-dark">Top Rated Dentists</h4>
-												<p class="mb-0 text-3-5 font-weight-medium">Lorem ipsum dolor sit amet, consec tetur adipiscing el nc viverra eratorciac auctor.</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-				<section class="section border-0 bg-color-light m-0 py-5">
-					<div class="container py-5 my-2">
-						<div class="row align-items-xl-center">
-							<div class="col-lg-6 mb-5 mb-lg-0 text-center">
-
-								<svg height="0" width="0">
-									<defs>
-										<clipPath id="svgPath">
-											<path d="M143.3,391.5C64.74,320.29-11.54,212.43,1.46,109.91,6.81,67.72,35,23.31,77.51,11.57c45.8-12.65,81.56,9.87,127.88,10,51,.11,99.23-34,152.49-16.65C458.61,37.71,412.21,170.19,372,228c-10.63,15.3-44.76,63.1-48.29,40.44-9.23-59.24-26.68-67.61-57.52-75.23-32.68-8.07-80.24,8.61-92.4,39.25-26.47,66.76,31,137.89,64.57,191.19.89,1.42,38.8,48.72,31,50.86-21.12,5.77-69.06-37.36-84.67-48.95C171.14,415.52,157.18,404.08,143.3,391.5Z" style="fill:#000"/>
-										</clipPath>
-									</defs>
-								</svg>	
-
-								<img class="img-fluid" style="clip-path: url(#svgPath); min-height: 480px; max-width: 420px;" src="img/demos/dentist/generic/generic-5.jpg" alt="">
-
-							</div>
-							<section class="working-hour-section">
-					<div class="container">
-						<section class="working-hours">
-							<h4>Working Hour</h4>
-							<div class="hour">
-								<div class="day">Mon - Tues</div>
-								<div class="time">9AM - 5PM</div>
-								<a href="#" class="book-now">BOOK NOW ></a>
-							</div>
-							<div class="hour">
-								<div class="day">Wed - Thu</div>
-								<div class="time">9AM - 5PM</div>
-								<a href="#" class="book-now">BOOK NOW ></a>
-							</div>
-							<div class="hour">
-								<div class="day">Fri - Sat</div>
-								<div class="time">9AM - 5PM</div>
-								<a href="#" class="book-now">BOOK NOW ></a>
-							</div>
-							<div class="hour">
-								<div class="day">Sun</div>
-								<div class="time">9AM - 5PM</div>
-								<a href="#" class="book-now">BOOK NOW ></a>
-							</div>
-							<div class="flexible-time">
-								<h6>Time’s not Flexible?</h6>
-								<p>Call to us and book an appointment with</p>
-							</div>
-							<div class="buttons">
-								<a href="#" class="btn">ONLINE APPOINTMENT</a>
-								<a href="#" class="btn emergency">CALL FOR EMERGENCY</a>
-							</div>
-						</section>
-				
-						<section class="image-section">
-							<img src="img/hospital-interir.jpg" alt="working hours" class="center-img">
-						</section>
-				
-						<section class="introduction">
-							<h1>Introduction</h1>
-							<p>With over 20 years of expertise, Dr. Kiran Neuro Centre operates across 4 branches—BanjaraHills, Miyapur, Uppal, and Trimulgherry. Backed by 200+ skilled doctors, we are committed to delivering
-								world-class, compassionate care for all your health needs.</p>
-							<ul>
-								<li>4 Branches</li>
-								<li>20+ Years of Experience</li>
-								<li>200+ Skilled doctors</li>
-								<li>Best Neurology Hospital In India</li>
-							</ul>
-							<h6>Dr. Kiran Neuro Centre</h6>
-							<p>Team of Dr. Kiran Neuro Centre</p>
-						</section>
-						</div>
-					</div>
-				</section>
-
-
-				<section class="neurological-care">
-					<style>
-						@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@400&family=Lora:wght@500&display=swap');
-						
-						.neurological-care {
-							font-family: 'Inter', sans-serif;
-							text-align: center;
-							padding: 60px 10%;
-							background-image: url('img/backgrnd.jpg');
-							background-size: cover;
-							background-position: center;
-							background-repeat: no-repeat;
-							color: #FFFFFF; /* White text for better contrast */
-						}
-						.container {
-							display: flex;
-							justify-content: center;
-							align-items: flex-start;
-							flex-wrap: nowrap;
-							gap: 80px;
-							max-width: 1200px;
-							margin: 0 auto;
-						}
-						.circle {
-							width: 120px;
-							height: 120px;
-							background-color: #C7E0F4; /* Softer Light Blue */
-							border-radius: 50%;
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							font-size: 26px;
-							font-weight: bold;
-							color: #0F172A; /* Dark Blue for contrast */
-						}
-						.stat {
-							display: flex;
-							flex-direction: column;
-							align-items: center;
-							max-width: 250px;
-							font-family: 'Lora', serif; /* Updated font for stats to match image */
-						}
-						.title {
-							font-size: 38px;
-							font-family: 'Playfair Display', serif;
-							margin-bottom: 40px;
-							font-weight: 500;
-							color: #E0F2FE; /* Light Blue Shade */
-						}
-						.desc {
-							margin-top: 15px;
-							text-align: center;
-							font-size: 18px;
-							color: #DCEAF7; /* Soft White-Blue */
-						}
-						.dow {
-							text-align: center;
-							margin-top: 40px; /* Increased margin for better spacing */
-							font-size: 14px;
-							font-style: italic;
-							color: #BFD7ED; /* Light Blue-Grey */
-						}
-						@media (max-width: 768px) {
-							.container {
-								flex-direction: column;
-								align-items: center;
-							}
-							.stat {
-								width: 100%;
-							}
-						}
-					</style>
-					
-					<div class="title">Life-changing Neurological Care</div>
-					<div class="container">
-						<div class="stat">
-							<div class="circle" id="count1">0%</div>
-							<div class="desc">Increase in Global Impression of Improvement*</div>
-						</div>
-						<div class="stat">
-							<div class="circle" id="count2">0%</div>
-							<div class="desc">Reduction in ER and urgent care visits*</div>
-						</div>
-						<div class="stat">
-							<div class="circle" id="count3">0%</div>
-							<div class="desc">Reduction in depression levels (PHQ-9)*</div>
-						</div>
-						<div class="stat">
-							<div class="circle" id="count4">0%</div>
-							<div class="desc">Rate Neura as 5 out of 5 stars</div>
-						</div>
-
-					</div>
-					<div class="dow">*Median change at 3 months of Neura membership</div>
-				
-					<script>
-						function animateCounter(id, target) {
-							let count = 0;
-							let speed = 2000 / target; // Adjust timing to finish at the same time
-							let interval = setInterval(() => {
-								count++;
-								document.getElementById(id).innerText = count + "%";
-								if (count >= target) {
-									clearInterval(interval);
-								}
-							}, speed);
-						}
-						
-						window.onload = function() {
-							animateCounter("count1", 45);
-							animateCounter("count2", 73);
-							animateCounter("count3", 13);
-							animateCounter("count4", 95);
-						};
-					</script>
-				</section>
-
-				<section class="section border-0 bg-color-light m-0 py-5">
-					<div class="container py-5 my-2">
-						<div class="row">
-							<div class="col-lg-6 mb-5 mb-lg-0">
-								<h2 class="d-inline-block line-height-5 text-4 positive-ls-3 font-weight-semibold text-color-primary mb-2 appear-animation" data-appear-animation="fadeInUpShorter">SPECIAL SERVICES</h2>
-								<h3 class="text-color-dark text-9 line-height-3 text-transform-none font-weight-semibold mb-4 mb-lg-3 mb-xl-4 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="250">Premium Dental Care services for everyone.</h3>
-								<p class="text-3-5 font-weight-medium pb-1 mb-4 mb-lg-2 mb-xl-4 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="500">Cras a elit sit amet leo accumsan volutpat. Suspendisse hendreriast ehicula leo, vel efficitur felis ultrices non. Cras a elit sit amet leo acun volutpat. Suspendisse hendrerit vehicula leo, vel efficitur fel. </p>
-
-							</div>
-
-							<div class="col-lg-6 mb-5">
-								<ul class="list list-icons list-icons-lg ms-lg-3 mt-lg-4 pt-lg-2">
-									<li class="text-3-5 font-weight-medium appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200"><i class="fas fa-check text-color-tertiary"></i> <span class="ps-2 d-block">Cras a elit sit amet leo accumsan volutpat. Suspendisse hendreriast ehicula leo.</span></li>
-									<li class="text-3-5 font-weight-medium appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="400"><i class="fas fa-check text-color-tertiary"></i> <span class="ps-2 d-block">Elit sit amet leo accumsan volutpat. Suspendisse hendreriast ehicula leo.</span></li>
-									<li class="text-3-5 font-weight-medium appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="600"><i class="fas fa-check text-color-tertiary"></i> <span class="ps-2 d-block">Ras a elit sit amet leo accumsan volutpat. Suspendisse hendreriast ehicula leo.</span></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="row appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-							<div class="col">
-								<hr>
-							</div>
-						</div>
-
-						<div class="row align-items-center text-center text-md-start pt-4 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-							<div class="col-lg-9 mb-3 mb-lg-0">
-								<p class="text-color-primary text-4-5 font-weight-medium line-height-4 mb-0">
-									<strong>Book Appointment Online</strong> - Need Immediate Confirmation? Call Us at <u>888-123-4567</u>
-								</p>
-							</div>
-							<div class="col-lg-3 text-center text-md-start text-lg-end">
-								<a href="demo-dentist-contact.html#book" class="btn btn-secondary border-0 text-3-5 font-weight-semi-bold btn-px-5 btn-py-3">Book Appointment</a>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				<section class="section border-0 bg-color-transparent m-0 py-5">
-					<div class="container py-5 my-2">
-						<div class="row">
-							<div class="col text-center">
-								<h2 class="d-inline-block line-height-5 text-4 positive-ls-3 font-weight-semibold text-color-primary mb-2 appear-animation" data-appear-animation="fadeInUpShorter">DOCTORS</h2>
-								<h3 class="text-color-dark text-9 line-height-3 text-transform-none font-weight-semibold mb-4 mb-lg-3 mb-xl-4 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="250">Meet Our Doctors</h3>
-
-								<div class="appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-									<div class="owl-carousel owl-theme nav-style-1 nav-arrows-thin nav-font-size-lg custom-nav-1 custom-nav-1-pos-3 p-relative mb-0 mt-2" data-plugin-options="{'responsive': {'0': {'items': 1}, '479': {'items': 1}, '768': {'items': 2}, '979': {'items': 2}, '1199': {'items': 3}}, 'loop': true, 'nav': true, 'dots': false, 'margin': 40}">
-										<div>
-											<div class="card border-0">
-												<span class="thumb-info thumb-info-no-borders thumb-info-no-borders-rounded thumb-info-slow-image-zoom-hover thumb-info-swap-content anim-hover-inner-wrapper">
-													<span class="thumb-info-wrapper overlay overflow-hidden">
-														<img src="img/demos/dentist/team/team-1.jpg" class="img-fluid" alt="">
-														<span class="thumb-info-title bottom-30 bg-transparent w-100 mw-100 p-0">
-															<span class="thumb-info-swap-content-wrapper">
-																<span class="thumb-info-inner text-start ps-5"></span>
-																<span class="thumb-info-inner text-2">
-																	<p class="px-5 text-4 text-lg-2 opacity-7 font-weight-medium text-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras posuere elit in massa congue congue. Ut ornare fermentum sem, vitae port.</p>
-
-																	<ul class="social-icons social-icons-clean social-icons-icon-light">
-																		<li class="social-icons-instagram">
-																			<a href="http://www.instagram.com/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-																		</li>
-																		<li class="social-icons-twitter">
-																			<a href="http://www.twitter.com/" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-																		</li>
-																		<li class="social-icons-facebook">
-																			<a href="http://www.facebook.com/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-																		</li>
-																	</ul>
-
-																</span>
-															</span>
-														</span>
-													</span>
-												</span>
-												<h3 class="font-weight-bold text-capitalize line-height-1 text-5-5 mt-4 mb-0">John Doe</h3>
-												<p class="font-weight-medium text-color-grey text-3 mb-2">Dentist, Owner</p>
-											</div>
-										</div>
-										<div>
-											<div class="card border-0">
-												<span class="thumb-info thumb-info-no-borders thumb-info-no-borders-rounded thumb-info-slow-image-zoom-hover thumb-info-swap-content anim-hover-inner-wrapper">
-													<span class="thumb-info-wrapper overlay overflow-hidden">
-														<img src="img/demos/dentist/team/team-2.jpg" class="img-fluid" alt="">
-														<span class="thumb-info-title bottom-30 bg-transparent w-100 mw-100 p-0">
-															<span class="thumb-info-swap-content-wrapper">
-																<span class="thumb-info-inner text-start ps-5"></span>
-																<span class="thumb-info-inner text-2">
-																	<p class="px-5 text-4 text-lg-2 opacity-7 font-weight-medium text-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras posuere elit in massa congue congue. Ut ornare fermentum sem, vitae port.</p>
-
-																	<ul class="social-icons social-icons-clean social-icons-icon-light">
-																		<li class="social-icons-instagram">
-																			<a href="http://www.instagram.com/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-																		</li>
-																		<li class="social-icons-twitter">
-																			<a href="http://www.twitter.com/" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-																		</li>
-																		<li class="social-icons-facebook">
-																			<a href="http://www.facebook.com/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-																		</li>
-																	</ul>
-
-																</span>
-															</span>
-														</span>
-													</span>
-												</span>
-												<h3 class="font-weight-bold text-capitalize line-height-1 text-5-5 mt-4 mb-0">Janice Doe</h3>
-												<p class="font-weight-medium text-color-grey text-3 mb-2">Associate Dentist</p>
-											</div>
-										</div>
-										<div>
-											<div class="card border-0">
-												<span class="thumb-info thumb-info-no-borders thumb-info-no-borders-rounded thumb-info-slow-image-zoom-hover thumb-info-swap-content anim-hover-inner-wrapper">
-													<span class="thumb-info-wrapper overlay overflow-hidden">
-														<img src="img/demos/dentist/team/team-3.jpg" class="img-fluid" alt="">
-														<span class="thumb-info-title bottom-30 bg-transparent w-100 mw-100 p-0">
-															<span class="thumb-info-swap-content-wrapper">
-																<span class="thumb-info-inner text-start ps-5"></span>
-																<span class="thumb-info-inner text-2">
-																	<p class="px-5 text-4 text-lg-2 opacity-7 font-weight-medium text-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras posuere elit in massa congue congue. Ut ornare fermentum sem, vitae port.</p>
-
-																	<ul class="social-icons social-icons-clean social-icons-icon-light">
-																		<li class="social-icons-instagram">
-																			<a href="http://www.instagram.com/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-																		</li>
-																		<li class="social-icons-twitter">
-																			<a href="http://www.twitter.com/" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-																		</li>
-																		<li class="social-icons-facebook">
-																			<a href="http://www.facebook.com/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-																		</li>
-																	</ul>
-
-																</span>
-															</span>
-														</span>
-													</span>
-												</span>
-												<h3 class="font-weight-bold text-capitalize line-height-1 text-5-5 mt-4 mb-0">Peter Phillips</h3>
-												<p class="font-weight-medium text-color-grey text-3 mb-2">Dental Hygienist</p>
-											</div>
-										</div>
-										<div>
-											<div class="card border-0">
-												<span class="thumb-info thumb-info-no-borders thumb-info-no-borders-rounded thumb-info-slow-image-zoom-hover thumb-info-swap-content anim-hover-inner-wrapper">
-													<span class="thumb-info-wrapper overlay overflow-hidden">
-														<img src="img/demos/dentist/team/team-2.jpg" class="img-fluid" alt="">
-														<span class="thumb-info-title bottom-30 bg-transparent w-100 mw-100 p-0">
-															<span class="thumb-info-swap-content-wrapper">
-																<span class="thumb-info-inner text-start ps-5"></span>
-																<span class="thumb-info-inner text-2">
-																	<p class="px-5 text-4 text-lg-2 opacity-7 font-weight-medium text-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras posuere elit in massa congue congue. Ut ornare fermentum sem, vitae port.</p>
-
-																	<ul class="social-icons social-icons-clean social-icons-icon-light">
-																		<li class="social-icons-instagram">
-																			<a href="http://www.instagram.com/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-																		</li>
-																		<li class="social-icons-twitter">
-																			<a href="http://www.twitter.com/" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-																		</li>
-																		<li class="social-icons-facebook">
-																			<a href="http://www.facebook.com/" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-																		</li>
-																	</ul>
-
-																</span>
-															</span>
-														</span>
-													</span>
-												</span>
-												<h3 class="font-weight-bold text-capitalize line-height-1 text-5-5 mt-4 mb-0">Janice Doe</h3>
-												<p class="font-weight-medium text-color-grey text-3 mb-2">Associate Dentist</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				<section class="section border-0 bg-color-light m-0 py-5">
-					<div class="container py-5 my-2">
-						<div class="row">
-							<div class="col text-center">
-								<h2 class="d-inline-block line-height-5 text-4 positive-ls-3 font-weight-semibold text-color-primary mb-2 appear-animation" data-appear-animation="fadeInUpShorter">BOOK ONLINE</h2>
-								<h3 class="text-color-dark text-9 line-height-3 text-transform-none font-weight-semibold mb-4 mb-lg-3 mb-xl-4 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="250">Request an Appointment</h3>
-								<p class="text-3-5 font-weight-medium pb-1 mb-4 mb-lg-2 mb-xl-4 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="500">Cras a elit sit amet leo accumsan volutpat. Suspendisse hendreriast ehicula leo, vel efficitur felis ultrices non.</p>
-
-								<form class="contact-form text-start appear-animation" data-appear-animation="fadeIn" data-appear-animation-delay="500" action="php/contact-form.php" method="POST">
-								    <div class="contact-form-success alert alert-success d-none mt-4">
-								        <strong>Success!</strong> Your message has been sent to us.
-								    </div>
-
-								    <div class="contact-form-error alert alert-danger d-none mt-4">
-								        <strong>Error!</strong> There was an error sending your message.
-								        <span class="mail-error-message text-1 d-block"></span>
-								    </div>
-
-								    <div class="row row-gutter-sm">
-								        <div class="form-group col-lg-6 mb-4">
-								            <input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control border-1 p-3 box-shadow-none" name="name" id="name" required placeholder="Your Name">
-								        </div>
-								        <div class="form-group col-lg-6 mb-4">
-								            <input type="text" value="" data-msg-required="Please enter your phone number." maxlength="100" class="form-control border-1 p-3 box-shadow-none" name="phone" id="phone" required placeholder="Phone Number">
-								        </div>
-								    </div>
-								    <div class="row row-gutter-sm">
-								        <div class="form-group col-lg-6 mb-4">
-								            <input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control border-1 p-3 box-shadow-none" name="email" id="email" required placeholder="E-mail Address">
-								        </div>
-								        <div class="form-group col-lg-6 mb-4">
-								            <input type="text" value="" data-msg-required="Please enter the service." maxlength="100" class="form-control border-1 p-3 box-shadow-none" name="service" id="service" required placeholder="Service">
-								        </div>
-								    </div>
-								    <div class="row">
-								        <div class="form-group col mb-4">
-								            <textarea maxlength="5000" data-msg-required="Please enter the details." rows="10" class="form-control border-1 p-3 box-shadow-none" name="message" id="message" required placeholder="Details"></textarea>
-								        </div>
-								    </div>
-								    <div class="row">
-								        <div class="form-group col text-end mb-0">
-								            <button type="submit" class="btn btn-secondary border-1 text-3-5 font-weight-semi-bold btn-px-5 btn-py-3">Submit</button>
-								        </div>
-								    </div>
-								</form>
-
-							</div>
-						</div>
-					</div>
-				</section>
-
-			</div> 
-
-			
-			<script>
-				fetch('footer.html')
-					.then(response => response.text())
-					.then(data => {
-						document.querySelector('body').insertAdjacentHTML('beforeend', data);
-					});
-			</script>
-
-		</div>
-
-		<!-- Vendor -->
-		<script src="vendor/plugins/js/plugins.min.js"></script>
-		<script src="vendor/twentytwenty/js/jquery.event.move.js"></script>
-		<script src="vendor/twentytwenty/js/jquery.twentytwenty.js"></script>
-
-		<!-- Theme Base, Components and Settings -->
-		<script src="js/theme.js"></script>
-
-		<!-- Current Page Vendor and Views -->
-		<script src="js/views/view.contact.js"></script>
-
-		<!-- Demo -->
-		<script src="js/demos/demo-dentist.js"></script>
-
-		<!-- Theme Custom -->
-		<script src="js/custom.js"></script>
-
-		<!-- Theme Initialization Files -->
-		<script src="js/theme.init.js"></script>
-
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-<style>
-	.container {
-    max-width: 100%; /* Makes it take more space */
-    transform-origin: center; /* Keeps it centered */
-}
-
-.doctor-card {
-    width: 120%; /* Increases width */
-    height: auto; /* Ensures it adjusts dynamically */
-    min-height: 500px; /* Sets a minimum height */
-    padding: 40px; /* Adds internal spacing */
-}
-
-.doctor-img {
-    max-width: 100%; /* Increases image size */
-    height: auto;
-}
-
-.btn-primary {
-    font-size: 32px; /* Increases button text size */
-    padding: 20px 40px; /* Enlarges button */
-}
-
-
-</style>
-
-	</body>
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
