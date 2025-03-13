@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Kiran Neuro Centre - Bootstrap Version</title>
+    <title>Dr. Kiran Neuro Centre </title>
+
+    <link rel="icon" href="img/klogo-.png" type="image/x-icon">
+
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,19 +25,121 @@
 
         body {
             font-family: 'Poppins', sans-serif;
+            padding-top: 0;
+            margin: 0;
+            overflow-x: hidden;
         }
 
-        /* Minimal custom styles */
+        /* Enhanced Navbar Styles */
         .navbar {
             backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            padding: 0.75rem 0;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            margin: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.98) !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand img {
+            height: 55px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link {
+            color: var(--bs-primary) !important;
+            font-weight: 500;
+            padding: 1rem !important;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--bs-secondary) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0.7rem;
+            left: 1rem;
+            right: 1rem;
+            height: 2px;
+            background: var(--bs-secondary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+        }
+
+        .top-contact {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .top-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .top-contact-item i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .top-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .top-social a {
+            color: white;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .top-social a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        /* Hero Section */
         .hero {
             background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
             min-height: 100vh;
             position: relative;
             overflow: hidden;
+            padding-top: 90px;
         }
 
         .service-card {
@@ -70,30 +175,54 @@
         footer {
             background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
         }
+
+        @media (max-width: 991.98px) {
+            .navbar {
+                padding: 0.5rem 0;
+            }
+
+            .hero {
+                padding-top: 76px;
+            }
+
+            .nav-link {
+                padding: 0.5rem 1rem !important;
+            }
+
+            .nav-link::after {
+                bottom: 0.3rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+   
+    <!-- Main Navbar -->
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="img/klogo-.png" alt="Dr. Kiran" height="60" class="d-inline-block align-top">
+                <img src="img/klogo-.png" alt="Dr. Kiran" class="d-inline-block align-top">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="#home">Home</a>
+                        <a class="nav-link" href="#home">Home</a>
                     </li>
+                   
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="#services">Services</a>
+                        <a class="nav-link" href="#services">Services</a>
                     </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="#contact">Contact</a>
+                        <a class="nav-link" href="#contact">Contact</a>
                     </li>
                 </ul>
+                <a href="slot-booking.php" class="btn emergency-btn ms-3 d-none d-lg-inline-block">
+                    Book Appointment
+                </a>
             </div>
         </div>
     </nav>
@@ -103,18 +232,16 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 mx-auto text-center text-white">
-                    <span class="badge bg-white text-primary px-4 py-2 mb-4 animate__animated animate__fadeInDown">
-                        Welcome to Dr. Kiran Neuro Centre
-                    </span>
+                    
                     <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInUp">
-                        Expert Care for Your Brain & Nervous System
+                       Welcome To <br> Dr. Kiran Neuro Centre
                     </h1>
                     <p class="lead mb-5 animate__animated animate__fadeInUp animate__delay-1s">
                         At Dr. Kiran Neuro Centre, we combine advanced medical expertise with compassionate care.
                         Our commitment to your health is reflected in every aspect of our service.
                     </p>
                     <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp animate__delay-2s">
-                        <a href="#appointment" class="btn btn-light btn-lg rounded-pill px-4">
+                        <a href="slot-booking.php" class="btn btn-light btn-lg rounded-pill px-4">
                             Book Appointment <i class="fas fa-arrow-right ms-2"></i>
                         </a>
                         <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-4">Contact Us</a>
@@ -257,7 +384,7 @@
                             <div class="text-center">
                                 <h6 class="fs-5 mb-3">Need an Appointment?</h6>
                                 <div class="d-grid gap-3">
-                                    <a href="#" class="btn btn-light rounded-pill fw-bold">ONLINE APPOINTMENT</a>
+                                    <a href="slot-booking.php" class="btn btn-light rounded-pill fw-bold">ONLINE APPOINTMENT</a>
                                     <a href="#" class="btn btn-outline-light rounded-pill fw-bold">EMERGENCY CALL</a>
                                 </div>
                             </div>
@@ -293,38 +420,7 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="stats-section py-5 text-white">
-        <div class="container">
-            <h2 class="text-center mb-5 display-5">Life-changing Neurological Care</h2>
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-3 text-center">
-                    <div class="stat-circle rounded-circle d-flex align-items-center justify-content-center mx-auto">
-                        <span class="display-6 fw-bold text-dark">45%</span>
-                    </div>
-                    <p class="mt-3">Increase in Global Impression</p>
-                </div>
-                <div class="col-md-3 text-center">
-                    <div class="stat-circle rounded-circle d-flex align-items-center justify-content-center mx-auto">
-                        <span class="display-6 fw-bold text-dark">73%</span>
-                    </div>
-                    <p class="mt-3">Reduction in ER and urgent care visits</p>
-                </div>
-                <div class="col-md-3 text-center">
-                    <div class="stat-circle rounded-circle d-flex align-items-center justify-content-center mx-auto">
-                        <span class="display-6 fw-bold text-dark">13%</span>
-                    </div>
-                    <p class="mt-3">Reduction in depression levels (PHQ-9)</p>
-                </div>
-                <div class="col-md-3 text-center">
-                    <div class="stat-circle rounded-circle d-flex align-items-center justify-content-center mx-auto">
-                        <span class="display-6 fw-bold text-dark">95%</span>
-                    </div>
-                    <p class="mt-3">Rate Neura as 5 out of 5 stars</p>
-                </div>
-            </div>
-            <p class="mt-4 fst-italic">Median change at 3 months of Neura membership</p>
-        </div>
-    </section>
+   
 
     <!-- Contact Section -->
     <section class="py-5 bg-light" id="contact">
@@ -334,19 +430,19 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h2 class="h3 fw-bold mb-4">Get in Touch</h2>
-                            <form>
+                            <form action="mailto:kiranneurocentre@gmail.com" method="post" enctype="text/plain">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="Your Name">
+                                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="email" class="form-control" placeholder="Your Email">
+                                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
                                     </div>
                                     <div class="col-12">
-                                        <input type="text" class="form-control" placeholder="Subject">
+                                        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
                                     </div>
                                     <div class="col-12">
-                                        <textarea class="form-control" rows="5" placeholder="Your Message"></textarea>
+                                        <textarea name="message" class="form-control" rows="5" placeholder="Your Message" required></textarea>
                                     </div>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-primary rounded-pill px-4">
@@ -368,7 +464,7 @@
                                 </div>
                                 <div class="ms-3">
                                     <h6 class="mb-1">Address</h6>
-                                    <p class="mb-0">123 Medical Center, City, Country</p>
+                                    <p class="mb-0">Juvvalapalem Road, Vantena, near Adda, Bhimavaram, Andhra Pradesh 534202</p>
                                 </div>
                             </div>
                             <div class="d-flex mb-4">
@@ -377,7 +473,7 @@
                                 </div>
                                 <div class="ms-3">
                                     <h6 class="mb-1">Phone</h6>
-                                    <p class="mb-0">+1 234 567 890</p>
+                                    <p class="mb-0">+814-385-2529/814-385-2528</p>
                                 </div>
                             </div>
                             <div class="d-flex mb-4">
@@ -386,7 +482,7 @@
                                 </div>
                                 <div class="ms-3">
                                     <h6 class="mb-1">Email</h6>
-                                    <p class="mb-0">info@drkiranneuro.com</p>
+                                    <p class="mb-0">kiranneurocentre@gmail.com</p>
                                 </div>
                             </div>
                             <div class="d-flex mb-4">
@@ -395,7 +491,9 @@
                                 </div>
                                 <div class="ms-3">
                                     <h6 class="mb-1">Working Hours</h6>
-                                    <p class="mb-0">Mon - Sun: 9:00 AM - 5:00 PM</p>
+                                    <pre class="mb-0">
+Mon - Sat: 9:00 AM - 1:00 PM  
+           6:00 PM - 8:00 PM</pre>
                                 </div>
                             </div>
                         </div>
@@ -412,23 +510,9 @@
                 <div class="col-lg-4">
                     <img src="img/klogo-.png" alt="Dr. Kiran" height="60" class="mb-4">
                     <p class="opacity-75">Dr. Kiran Neuro Centre provides expert neurological care with a focus on patient well-being and advanced treatment methods.</p>
-                    <div class="d-flex gap-3 mt-4">
-                        <a href="#" class="btn btn-light btn-sm rounded-circle">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="btn btn-light btn-sm rounded-circle">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="btn btn-light btn-sm rounded-circle">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="btn btn-light btn-sm rounded-circle">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
                 </div>
                 <!-- Quick Links -->
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h5 class="mb-4">Quick Links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="#home" class="text-white text-decoration-none opacity-75">Home</a></li>
@@ -438,7 +522,7 @@
                     </ul>
                 </div>
                 <!-- Services -->
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h5 class="mb-4">Our Services</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Headache Treatment</a></li>
@@ -446,15 +530,6 @@
                         <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Paralysis Care</a></li>
                         <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Memory Loss Treatment</a></li>
                     </ul>
-                </div>
-                <!-- Newsletter -->
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="mb-4">Newsletter</h5>
-                    <p class="opacity-75">Subscribe to our newsletter for updates and health tips.</p>
-                    <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Your Email">
-                        <button class="btn btn-light" type="button">Subscribe</button>
-                    </div>
                 </div>
             </div>
             <hr class="my-4 opacity-25">
