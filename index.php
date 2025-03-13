@@ -1,734 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Kiran Neuro Centre </title>
 
-		<!-- Basic -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<title>Dr.kiran</title>	
-
-		<meta name="keywords" content="WebSite Template" />
-		<meta name="description" content="Porto - Multipurpose Website Template">
-		<meta name="author" content="okler.net">
-
-		<!-- Favicon -->
-		<link rel="shortcut icon" href="img/demos/dentist/klogo.png" type="image/x-icon" />
-		<link rel="apple-touch-icon" href="img/demos/dentist/klogo.png">
-
-		<!-- Mobile Metas -->
-		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
-
-		<!-- Web Fonts  -->
-		<link id="googleFonts" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800%7CShadows+Into+Light&display=swap" rel="stylesheet" type="text/css">
-
-		<!-- Vendor CSS -->
-		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
-		<link rel="stylesheet" href="vendor/fontawesome-free/css/all.min.css">
-		<link rel="stylesheet" href="vendor/animate/animate.compat.css">
-		<link rel="stylesheet" href="vendor/simple-line-icons/css/simple-line-icons.min.css">
-		<link rel="stylesheet" href="vendor/owl.carousel/assets/owl.carousel.min.css">
-		<link rel="stylesheet" href="vendor/owl.carousel/assets/owl.theme.default.min.css">
-		<link rel="stylesheet" href="vendor/magnific-popup/magnific-popup.min.css">
-
-		<!-- Theme CSS -->
-		<link rel="stylesheet" href="css/theme.css">
-		<link rel="stylesheet" href="css/theme-elements.css">
-		<link rel="stylesheet" href="css/theme-blog.css">
-		<link rel="stylesheet" href="css/theme-shop.css">
-		
-
-		<!-- Skin CSS -->
-		<link id="skinCSS" rel="stylesheet" href="css/skins/default.css">
-
-		<!-- Theme Custom CSS -->
-		<link rel="stylesheet" href="css/custom.css">
-
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-		<style>
-			.working-hours {
-				background-color: #1e3c72;
-			}
-			.introduction h1::after {
-				content: '';
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 60px;
-				height: 3px;
-				background-color: #1e3c72;
-			}
-			.custom-dash::before {
-				content: '—';
-				position: absolute;
-				left: 0;
-				color: #1e3c72;
-			}
-		</style>
-
-	</head>
-	<body id="body" class="one-page alternative-font-5" data-plugin-scroll-spy data-plugin-options="{'target': '#header'}">
-		<div class="body">
-
-			<header id="header"  data-plugin-options="{'stickyEnabled': true, 'stickyEffect': 'shrink', 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': true, 'stickyStartAt': 30, 'stickyHeaderContainerHeight': 90}">
-				<div class="header-body border-top-0 bg-light box-shadow-none p-0 pb-0">
-					<div class="header-container container">
-						<div class="header-row">
-							<div class="header-column">
-								<div class="header-row">
-									<div class="header-logo">
-										<a href="#">
-											<img  alt="kiran" width="92" height="60" src="img/klogo-.png">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="header-column justify-content-end">
-								<div class="header-row">
-									<div class="header-nav header-nav-links header-nav-dropdowns-dark header-nav-light-text order-2 order-lg-1">
-										<div class="header-nav-main header-nav-main-font-lg header-nav-main-font-lg-upper-2 header-nav-main-mobile-dark header-nav-main-square header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
-											<nav class="collapse">
-												<ul class="nav nav-pills" id="mainNav">
-													<li class="dropdown">
-														<a data-hash class="nav-link active text-color-dark" href="#home">
-															Home
-														</a>
-														
-													</li>
-													<li>
-														<a class="nav-link text-color-dark text-primary-hover" data-hash data-hash-offset="0" data-hash-offset-lg="68" href="#services">Services</a>
-													</li>
-													<li>
-														<a class="nav-link text-color-dark text-primary-hover" data-hash data-hash-offset="0" data-hash-offset-lg="68" href="#projects">Projects</a>
-													</li>
-													<li>
-														<a class="nav-link text-color-dark text-primary-hover" data-hash data-hash-offset="0" data-hash-offset-lg="68" href="#clients">Clients</a>
-													</li>
-													<li>
-														<a class="nav-link text-color-dark text-primary-hover" data-hash data-hash-offset="0" data-hash-offset-lg="68" href="#team">Meet the Team</a>
-													</li>
-													<li>
-														<a class="nav-link text-color-dark text-primary-hover" data-hash data-hash-offset="0" data-hash-offset-lg="68" href="#contact">Contact Us</a>
-													</li>
-												</ul>
-											</nav>
-										</div>
-										<button class="btn header-btn-collapse-nav" data-bs-toggle="collapse" data-bs-target=".header-nav-main nav">
-											<i class="fas fa-bars"></i>
-										</button>
-										<div id="userbox" class="userbox">
-						<a href="#" data-bs-toggle="dropdown">
-							<figure class="profile-picture">
-								<img src="img/!logged-user.jpg" alt="Joseph Doe" class="rounded-circle" data-lock-picture="img/!logged-user.jpg" />
-							</figure>
-							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
-								<span class="name">John Doe Junior</span>
-								<span class="role">Administrator</span>
-							</div>
-
-							<i class="fa custom-caret"></i>
-						</a>
-
-						<div class="dropdown-menu">
-							<ul class="list-unstyled mb-2">
-								<li class="divider"></li>
-								<li>
-									<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="bx bx-user-circle"></i> My Profile</a>
-								</li>
-								<li>
-									<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
-								</li>
-								<li>
-									<a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="bx bx-power-off"></i> Logout</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</header>
-
-			<div role="main" class="main">
-				<div class="container-fluid px-0">
-					<div class="row g-0 min-vh-100 bg-gradient">
-						<div class="col-lg-6 p-5 d-flex align-items-center" style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
-							<div class="w-100 py-5">
-								<div class="px-5 animate__animated animate__fadeIn">
-									<h1 class="display-3 fw-bold mb-4" style="color: #2d3436; line-height: 1.2;">
-										We Listen,<br>
-										We Care,<br>
-										<span class="text-primary">We Heal.</span>
-									</h1>
-									
-									<p class="lead text-muted mb-5">
-										At Dr. Kiran Neuro Centre, we combine advanced medical expertise with compassionate care. 
-										Our commitment to your health is reflected in every aspect of our service.
-									</p>
-
-									<div class="d-flex gap-3 mb-5">
-										<a href="slot-booking.php" class="btn btn-primary btn-lg px-4 rounded-pill">
-											Appointment
-										</a>
-										<a href="#contact" class="btn btn-outline-primary btn-lg px-4 rounded-pill">
-											Contact Us
-										</a>
-									</div>
-
-									<div class="row mt-5 g-4">
-										<div class="col-6">
-											<div class="d-flex align-items-center">
-												<h2 class="display-4 fw-bold text-primary mb-0">10</h2>
-												<p class="ms-3 mb-0 text-dark">Best<br>Specialists</p>
-											</div>
-										</div>
-										<div class="col-6">
-											<div class="d-flex align-items-center">
-												<h2 class="display-4 fw-bold text-primary mb-0">20K</h2>
-												<p class="ms-3 mb-0 text-dark">Patients<br>Healed</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						
-						<div class="col-lg-6 position-relative overflow-hidden bg-light">
-							<div class="position-absolute top-50 start-45 translate-middle w-100 h-100" style="background: linear-gradient(135deg, #4e73df1a 0%, #ffffff33 100%);"></div>
-							<img src="img/kiran_logo-removebg.png" alt="Doctor" class="position-absolute top-50 start-50 translate-middle-y h-75 w-75 object-fit-cover animate__animated animate__fadeInRight">
-							
-							<!-- Floating Elements -->
-							<div class="position-absolute top-50 end-0 translate-middle-y pe-5 animate__animated animate__fadeInRight animate__delay-1s">
-								
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Add required styles -->
-				<style>
-					.bg-gradient {
-						background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-					}
-					.object-fit-cover {
-						object-fit: cover;
-					}
-					@media (max-width: 991.98px) {
-						.min-vh-100 {
-							min-height: auto !important;
-						}
-					}
-				</style>
-			</div>
-
-			<section id="services" class="section section-height-3 bg-primary border-0 m-0 appear-animation mt-4" data-appear-animation="fadeIn">
-				<div class="container my-3">
-					<div class="row mb-5">
-						<div class="col text-center appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-							<h2 class="font-weight-bold text-color-light mb-2">Services</h2>
-						</div>
-					</div>
-					<div class="row mb-lg-4">
-						<div class="col-lg-4 appear-animation" data-appear-animation="fadeInLeftShorter" data-appear-animation-delay="300">
-							<div class="feature-box feature-box-style-2">
-								<div class="feature-box-icon">
-									<i class="fa-solid fa-head-side-virus text-color-light"></i>
-								</div>
-								<div class="feature-box-info">
-									<h4 class="font-weight-bold text-color-light text-4 mb-2">HEADACHE</h4>
-									<p class="text-color-light opacity-7">
-										• Advanced headache diagnosis<br>
-										• Treatment for migraines and tension headaches<br>
-										• Stress management & lifestyle counseling<br>
-										• Neurological evaluation for severe cases
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 appear-animation" data-appear-animation="fadeInUpShorter">
-							<div class="feature-box feature-box-style-2">
-								<div class="feature-box-icon">
-									<i class="fa-solid fa-brain text-color-light"></i>
-								</div>
-								<div class="feature-box-info">
-									<h4 class="font-weight-bold text-color-light text-4 mb-2">FITS (Seizures)</h4>
-									<p class="text-color-light opacity-7">
-										• Epilepsy screening & diagnosis<br>
-										• EEG & brain imaging tests<br>
-										• Medication & seizure control management<br>
-										• Emergency care for acute episodes
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 appear-animation" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="300">
-							<div class="feature-box feature-box-style-2">
-								<div class="feature-box-icon">
-									<i class="fa-solid fa-person-falling text-color-light"></i>
-								</div>
-								<div class="feature-box-info">
-									<h4 class="font-weight-bold text-color-light text-4 mb-2">GIDDINESS</h4>
-									<p class="text-color-light opacity-7">
-										• Vertigo & balance disorder diagnosis<br>
-										• Inner ear & neurological assessments<br>
-										• Personalized treatment plans<br>
-										• Rehabilitation & therapy sessions
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-4 appear-animation" data-appear-animation="fadeInLeftShorter" data-appear-animation-delay="300">
-							<div class="feature-box feature-box-style-2">
-								<div class="feature-box-icon">
-									<i class="fa-solid fa-wheelchair-move text-color-light"></i>
-								</div>
-								<div class="feature-box-info">
-									<h4 class="font-weight-bold text-color-light text-4 mb-2">PARALYSIS</h4>
-									<p class="text-color-light opacity-7">
-										• Stroke rehabilitation programs<br>
-										• Physiotherapy & mobility assistance<br>
-										• Neurotherapy for recovery<br>
-										• Assistive devices & long-term care
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 appear-animation" data-appear-animation="fadeInUpShorter">
-							<div class="feature-box feature-box-style-2">
-								<div class="feature-box-icon">
-									<i class="fa-solid fa-temperature-high text-color-light"></i>
-								</div>
-								<div class="feature-box-info">
-									<h4 class="font-weight-bold text-color-light text-4 mb-2">BRAIN FEVER</h4>
-									<p class="text-color-light opacity-7">
-										• Rapid diagnosis & critical care<br>
-										• Treatment for meningitis & encephalitis<br>
-										• Specialized fever management<br>
-										• Intensive monitoring & infection control
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 appear-animation" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="300">
-							<div class="feature-box feature-box-style-2">
-								<div class="feature-box-icon">
-									<i class="fa-solid fa-brain text-color-light"></i>
-								</div>
-								<div class="feature-box-info">
-									<h4 class="font-weight-bold text-color-light text-4 mb-2">MEMORY LOSS</h4>
-									<p class="text-color-light opacity-7">
-										• Early diagnosis of dementia & Alzheimer's<br>
-										• Cognitive therapy & brain exercises<br>
-										• Medication & lifestyle adjustments<br>
-										• Family counseling & support
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			
-
-			<section class="py-4 bg-light">
-				<div class="container">
-					<div class="row">
-						<!-- Working Hours Section -->
-						<div class="col-lg-4">
-							<div class="working-hours text-white p-4 rounded">
-								<h4 class="text-center border-bottom border-white border-opacity-25 pb-3 mb-4">Working Hours</h4>
-								
-								<div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
-									<div>Mon - Tues</div>
-									<div>9AM - 5PM</div>
-								</div>
-								<div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
-									<div>Wed - Thu</div>
-									<div>9AM - 5PM</div>
-								</div>
-								<div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
-									<div>Fri - Sat</div>
-									<div>9AM - 5PM</div>
-								</div>
-								<div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
-									<div>Sun</div>
-									<div>9AM - 5PM</div>
-								</div>
-
-								<div class="text-center mt-5">
-									<h6 class="fs-5 mb-2">Time's not Flexible?</h6>
-									<p class="mb-4">Call us and book an appointment with</p>
-								</div>
-
-								<div class="d-grid gap-3">
-									<a href="#" class="btn btn-light fw-bold">ONLINE APPOINTMENT</a>
-									<a href="#" class="btn btn-outline-light fw-bold">CALL FOR EMERGENCY</a>
-								</div>
-							</div>
-						</div>
-
-						<!-- Image Section -->
-						<div class="col-lg-4">
-							<div class="mt-5">
-								<img src="img/hospital-interir.jpg" alt="working hours" class="img-fluid rounded w-100 h-100 object-fit-cover">
-							</div>
-						</div>
-
-						<!-- Introduction Section -->
-						<div class="col-lg-4">
-							<div class="p-4 fw-bold">
-								<h1 class="text-primary position-relative pb-2 mb-4" style="color: #1e3c72 !important;">Introduction</h1>
-								<p class="text-muted">Dr. Kiran Neuro Centre is committed to delivering world-class, compassionate care for all neurological needs. We specialize in advanced diagnostics, personalized treatments, and innovative neurorehabilitation, ensuring the best outcomes with a patient-first approach. Your health is our priority—experience expert care with us.</p>
-
-								<ul class="list-unstyled my-4">
-									<li class="position-relative ps-4 mb-2 text-muted custom-dash">20+ Years of Experience</li>
-									<li class="position-relative ps-4 mb-2 text-muted custom-dash">Best Neurology Hospital In Bhimavaram</li>
-								</ul>
-								
-								<h6 class="fs-5 mb-2" style="color: #1e3c72;">Dr. Kiran Neuro Centre</h6>
-								<p class="text-muted">Team of Dr. Kiran Neuro Centre</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<section class="neurological-care py-5 text-center text-white" style="background: url('img/backgrnd.jpg') center/cover no-repeat;">
-				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-				
-				<div class="container">
-					<h2 class="mb-4 display-5 fst-italic">Life-changing Neurological Care</h2>
-					<div class="row justify-content-center">
-						<div class="col-md-3 text-center">
-							<div class="rounded-circle bg-info text-dark d-flex align-items-center justify-content-center " style="width: 120px; height: 120px; font-size: 26px; font-weight: bold; margin: 0 auto; background-color: #88bbcc;" id="count1">0%</div>
-							<p class="mt-3 text-light">Increase in Global Impression of Improvement</p>
-						</div>
-						<div class="col-md-3 text-center ">
-							<div class="rounded-circle bg-info text-dark d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 26px; font-weight: bold; margin: 0 auto; background-color: #88bbcc;" id="count2">0%</div>
-							<p class="mt-3 text-light">Reduction in ER and urgent care visits</p>
-						</div>
-						<div class="col-md-3 text-center ">
-							<div class="rounded-circle bg-info text-dark d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 26px; font-weight: bold; margin: 0 auto; background-color: #88bbcc;" id="count3">0%</div>
-							<p class="mt-3 text-light">Reduction in depression levels (PHQ-9)</p>
-						</div>
-						<div class="col-md-3 text-center ">
-							<div class="rounded-circle bg-info text-dark d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 26px; font-weight: bold; margin: 0 auto; background-color: #88bbcc;" id="count4">0%</div>
-							<p class="mt-3 text-light">Rate Neura as 5 out of 5 stars</p>
-						</div>
-					</div>
-					<p class="mt-4 text-light fst-italic ">Median change at 3 months of Neura membership</p>
-				</div>
-			
-				<script>
-					function animateCounter(id, target) {
-						let count = 0;
-						let speed = 2000 / target;
-						let interval = setInterval(() => {
-							count++;
-							document.getElementById(id).innerText = count + "%";
-							if (count >= target) {
-								clearInterval(interval);
-							}
-						}, speed);
-					}
-			
-					window.onload = function() {
-						animateCounter("count1", 45);
-						animateCounter("count2", 73);
-						animateCounter("count3", 13);
-						animateCounter("count4", 95);
-					};
-				</script>
-			</section>
-			
-
-			<div id="team" class="container pb-4">
-				<div class="row pt-5 mt-5 mb-4">
-					<div class="col text-center appear-animation" data-appear-animation="fadeInUpShorter">
-						<h2 class="font-weight-bold mb-1">Team</h2>
-						<p>LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT</p>
-					</div>
-				</div>
-				<div class="row pb-5 mb-5 appear-animation" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="200">
-					<div class="col-sm-6 col-lg-3 mb-4 mb-lg-0">
-						<span class="thumb-info thumb-info-hide-wrapper-bg thumb-info-no-zoom">
-							<span class="thumb-info-wrapper">
-								<a href="about-me.html">
-									<img src="img/team/team-1.jpg" class="img-fluid" alt="">
-								</a>
-							</span>
-							<span class="thumb-info-caption">
-								<h3 class="font-weight-extra-bold text-color-dark text-4 line-height-1 mt-3 mb-0">John Doe</h3>
-								<span class="text-2 mb-0">CEO</span>
-								<span class="thumb-info-caption-text pt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac ligula mi, non suscipitaccumsan</span>
-								<span class="thumb-info-social-icons">
-									<a target="_blank" href="http://www.facebook.com"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
-									<a href="http://www.twitter.com"><i class="fab fa-twitter"></i><span>Twitter</span></a>
-									<a href="http://www.linkedin.com"><i class="fab fa-linkedin-in"></i><span>Linkedin</span></a>
-								</span>
-							</span>
-						</span>
-					</div>
-					<div class="col-sm-6 col-lg-3 mb-4 mb-lg-0">
-						<span class="thumb-info thumb-info-hide-wrapper-bg thumb-info-no-zoom">
-							<span class="thumb-info-wrapper">
-								<a href="about-me.html">
-									<img src="img/team/team-2.jpg" class="img-fluid" alt="">
-								</a>
-							</span>
-							<span class="thumb-info-caption">
-								<h3 class="font-weight-extra-bold text-color-dark text-4 line-height-1 mt-3 mb-0">Jessica Doe</h3>
-								<span class="text-2 mb-0">DESIGNER</span>
-								<span class="thumb-info-caption-text pt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac ligula mi, non suscipitaccumsan</span>
-								<span class="thumb-info-social-icons">
-									<a target="_blank" href="http://www.facebook.com"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
-									<a href="http://www.twitter.com"><i class="fab fa-twitter"></i><span>Twitter</span></a>
-									<a href="http://www.linkedin.com"><i class="fab fa-linkedin-in"></i><span>Linkedin</span></a>
-								</span>
-							</span>
-						</span>
-					</div>
-					<div class="col-sm-6 col-lg-3 mb-4 mb-sm-0">
-						<span class="thumb-info thumb-info-hide-wrapper-bg thumb-info-no-zoom">
-							<span class="thumb-info-wrapper">
-								<a href="about-me.html">
-									<img src="img/team/team-3.jpg" class="img-fluid" alt="">
-								</a>
-							</span>
-							<span class="thumb-info-caption">
-								<h3 class="font-weight-extra-bold text-color-dark text-4 line-height-1 mt-3 mb-0">Ricki Doe</h3>
-								<span class="text-2 mb-0">DEVELOPER</span>
-								<span class="thumb-info-caption-text pt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac ligula mi, non suscipitaccumsan</span>
-								<span class="thumb-info-social-icons">
-									<a target="_blank" href="http://www.facebook.com"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
-									<a href="http://www.twitter.com"><i class="fab fa-twitter"></i><span>Twitter</span></a>
-									<a href="http://www.linkedin.com"><i class="fab fa-linkedin-in"></i><span>Linkedin</span></a>
-								</span>
-							</span>
-						</span>
-					</div>
-					<div class="col-sm-6 col-lg-3">
-						<span class="thumb-info thumb-info-hide-wrapper-bg thumb-info-no-zoom">
-							<span class="thumb-info-wrapper">
-								<a href="about-me.html">
-									<img src="img/team/team-4.jpg" class="img-fluid" alt="">
-								</a>
-							</span>
-							<span class="thumb-info-caption">
-								<h3 class="font-weight-extra-bold text-color-dark text-4 line-height-1 mt-3 mb-0">Melinda Doe</h3>
-								<span class="text-2 mb-0">SEO ANALYST</span>
-								<span class="thumb-info-caption-text pt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac ligula mi, non suscipitaccumsan</span>
-								<span class="thumb-info-social-icons">
-									<a target="_blank" href="http://www.facebook.com"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
-									<a href="http://www.twitter.com"><i class="fab fa-twitter"></i><span>Twitter</span></a>
-									<a href="http://www.linkedin.com"><i class="fab fa-linkedin-in"></i><span>Linkedin</span></a>
-								</span>
-							</span>
-						</span>
-					</div>
-				</div>
-			</div>
+    <link rel="icon" href="img/klogo-.png" type="image/x-icon">
 
 
-			<section id="contact" class="section bg-color-grey border-0 py-0 m-0">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-md-6">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
-							<!-- Google Maps - Settings on footer -->
-							<div id="googlemaps" class="google-map h-100 m-0" style="min-height: 400px;"></div>
+    <style>
+        :root {
+            --bs-primary: #1e3c72;
+            --bs-secondary: #88bbcc;
+        }
 
-						</div>
-						<div class="col-md-6 p-5 my-5">
+        body {
+            font-family: 'Poppins', sans-serif;
+            padding-top: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-							<div class="px-4">
-								<h2 class="font-weight-bold line-height-1 mb-2">Contact Us</h2>
-								<p class="text-3 mb-4">LOREM IPSUM DOLOR SIT A MET</p>
-								<form class="contact-form form-style-2 pe-xl-5" action="php/contact-form.php" method="POST">
-									<div class="contact-form-success alert alert-success d-none mt-4">
-										<strong>Success!</strong> Your message has been sent to us.
-									</div>
+        /* Enhanced Navbar Styles */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98) !important;
+            padding: 0.75rem 0;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            margin: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-									<div class="contact-form-error alert alert-danger d-none mt-4">
-										<strong>Error!</strong> There was an error sending your message.
-										<span class="mail-error-message text-1 d-block"></span>
-									</div>
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.98) !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-									<div class="row">
-										<div class="form-group col-xl-4">
-											<input type="text" value="" data-msg-required="Please enter your name." maxlength="100" class="form-control" name="name" placeholder="Name" required>
-										</div>
-										<div class="form-group col-xl-8">
-											<input type="email" value="" data-msg-required="Please enter your email address." data-msg-email="Please enter a valid email address." maxlength="100" class="form-control" name="email" placeholder="Email" required>
-										</div>
-									</div>
-									<div class="row">
-										<div class="form-group col">
-											<input type="text" value="" data-msg-required="Please enter the subject." maxlength="100" class="form-control" name="subject" placeholder="Subject" required>
-										</div>
-									</div>
-									<div class="row">
-										<div class="form-group col">
-											<textarea maxlength="5000" data-msg-required="Please enter your message." rows="4" class="form-control" name="message" placeholder="Message" required></textarea>
-										</div>
-									</div>
-									<div class="row">
-										<div class="form-group col">
-											<input type="submit" value="SUBMIT" class="btn btn-primary btn-rounded font-weight-semibold px-5 btn-py-2 text-2" data-loading-text="Loading...">
-										</div>
-									</div>
-								</form>
-							</div>
+        .navbar-brand img {
+            height: 55px;
+            transition: all 0.3s ease;
+        }
 
-						</div>
-					</div>
-				</div>
-			</section>
+        .nav-link {
+            color: var(--bs-primary) !important;
+            font-weight: 500;
+            padding: 1rem !important;
+            position: relative;
+            transition: all 0.3s ease;
+        }
 
-			<section class="section bg-primary border-0 m-0">
-				<div class="container">
-					<div class="row justify-content-center text-center text-lg-start py-4">
-						<div class="col-lg-auto appear-animation" data-appear-animation="fadeInRightShorter">
-							<div class="feature-box feature-box-style-2 d-block d-lg-flex mb-4 mb-lg-0">
-								<div class="feature-box-icon">
-									<i class="icon-location-pin icons text-color-light"></i>
-								</div>
-								<div class="feature-box-info ps-1">
-									<h5 class="font-weight-light text-color-light opacity-7 mb-0">ADDRESS</h5>
-									<p class="text-color-light font-weight-semibold mb-0">MON - FRI: 10:00am - 6:00pm</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-auto appear-animation" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="200">
-							<div class="feature-box feature-box-style-2 d-block d-lg-flex mb-4 mb-lg-0 px-xl-4 mx-lg-5">
-								<div class="feature-box-icon">
-									<i class="icon-call-out icons text-color-light"></i>
-								</div>
-								<div class="feature-box-info ps-1">
-									<h5 class="font-weight-light text-color-light opacity-7 mb-0">CALL US NOW</h5>
-									<a href="tel:+8001234567" class="text-color-light font-weight-semibold text-decoration-none">800-123-4567</a>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-auto appear-animation" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="400">
-							<div class="feature-box feature-box-style-2 d-block d-lg-flex">
-								<div class="feature-box-icon">
-									<i class="icon-share icons text-color-light"></i>
-								</div>
-								<div class="feature-box-info ps-1">
-									<h5 class="font-weight-light text-color-light opacity-7 mb-0">FOLLOW US</h5>
-									<p class="mb-0">
-										<span class="social-icons-facebook"><a href="http://www.facebook.com/" target="_blank" class="text-color-light font-weight-semibold" title="Facebook"><i class="me-1 fab fa-facebook-f"></i> FACEBOOK</a></span>
-										<span class="social-icons-twitter ps-3"><a href="http://www.twitter.com/" target="_blank" class="text-color-light font-weight-semibold" title="Twitter"><i class="me-1 fab fa-twitter"></i> TWITTER</a></span>
-										<span class="social-icons-instagram ps-3"><a href="http://www.linkedin.com/" target="_blank" class="text-color-light font-weight-semibold" title="Linkedin"><i class="me-1 fab fa-instagram"></i> INSTAGRAM</a></span>
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		</div>
+        .nav-link:hover {
+            color: var(--bs-secondary) !important;
+        }
 
-		<!-- Copyright -->
-		</footer>
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0.7rem;
+            left: 1rem;
+            right: 1rem;
+            height: 2px;
+            background: var(--bs-secondary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
 
-	</div>
+        .nav-link:hover::after {
+            transform: scaleX(1);
+        }
 
-	<!-- Vendor -->
-	<script src="vendor/plugins/js/plugins.min.js"></script>
+        .top-contact {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
 
-	<!-- Theme Base, Components and Settings -->
-	<script src="js/theme.js"></script>
+        .top-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-	<script src="js/views/view.contact.js"></script>
+        .top-contact-item i {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
 
-	<!-- Theme Custom -->
-	<script src="js/custom.js"></script>
+        .top-social {
+            display: flex;
+            gap: 1rem;
+        }
 
-	<!-- Theme Initialization Files -->
-	<script src="js/theme.init.js"></script>
+        .top-social a {
+            color: white;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
 
-	<!-- Examples -->
-	<script src="js/examples/examples.portfolio.js"></script>
+        .top-social a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
 
-	<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-	<script>
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
 
-		/*
-		Map Settings
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: white;
+        }
 
-			Find the Latitude and Longitude of your address:
-				- https://www.latlong.net/
-				- http://www.findlatitudeandlongitude.com/find-address-from-latitude-and-longitude/
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding-top: 90px;
+        }
 
-		*/
+        .service-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-		function initializeGoogleMaps() {
-			// Map Markers
-			var mapMarkers = [{
-				address: "New York, NY 10017",
-				html: "<strong>New York Office</strong><br>New York, NY 10017<br><br><a href='#' onclick='mapCenterAt({latitude: 40.75198, longitude: -73.96978, zoom: 16}, event)'>[+] zoom here</a>",
-				icon: {
-					image: "img/pin.png",
-					iconsize: [26, 46],
-					iconanchor: [12, 46]
-				}
-			}];
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
 
-			// Map Initial Location
-			var initLatitude = 40.75198;
-			var initLongitude = -73.96978;
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+        }
 
-			// Map Extended Settings
-			var mapSettings = {
-				controls: {
-					draggable: (($.browser.mobile) ? false : true),
-					panControl: true,
-					zoomControl: true,
-					mapTypeControl: true,
-					scaleControl: true,
-					streetViewControl: true,
-					overviewMapControl: true
-				},
-				scrollwheel: false,
-				markers: mapMarkers,
-				latitude: initLatitude,
-				longitude: initLongitude,
-				zoom: 5
-			};
+        .stats-section {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img/backgrnd.jpg');
+            background-size: cover;
+            background-position: center;
+        }
 
-			var map = $('#googlemaps').gMap(mapSettings),
-				mapRef = $('#googlemaps').data('gMap.reference');
+        .stat-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--bs-secondary);
+        }
 
-			// Styles from https://snazzymaps.com/
-			var styles = [{"featureType":"water","elementType":"geometry","stylers":[{"color":"#e9e9e9"},{"lightness":17}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#f5f5f5"},{"lightness":20}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#ffffff"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#ffffff"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#ffffff"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#ffffff"},{"lightness":16}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#f5f5f5"},{"lightness":21}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#dedede"},{"lightness":21}]},{"elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#ffffff"},{"lightness":16}]},{"elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#333333"},{"lightness":40}]},{"elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#f2f2f2"},{"lightness":19}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#fefefe"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#fefefe"},{"lightness":17},{"weight":1.2}]}];
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+        }
 
-			var styledMap = new google.maps.StyledMapType(styles, {
-				name: 'Styled Map'
-			});
+        footer {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+        }
 
-			mapRef.mapTypes.set('map_style', styledMap);
-			mapRef.setMapTypeId('map_style');
-		}
+        @media (max-width: 991.98px) {
+            .navbar {
+                padding: 0.5rem 0;
+            }
 
-		// Initialize Google Maps when element enter on browser view
-		theme.fn.intObs( '.google-map', 'initializeGoogleMaps()', {} );
+            .hero {
+                padding-top: 76px;
+            }
 
-		// Map text-center At
-		var mapCenterAt = function(options, e) {
-			e.preventDefault();
-			$('#googlemaps').gMap("centerAt", options);
-		}
+            .nav-link {
+                padding: 0.5rem 1rem !important;
+            }
 
-	</script>
+            .nav-link::after {
+                bottom: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <!-- Main Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="img/klogo-.png" alt="Dr. Kiran" class="d-inline-block align-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                   
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="slot-booking.php" class="btn emergency-btn ms-3 d-none d-lg-inline-block">
+                    Book Appointment
+                </a>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Hero Section -->
+    <section class="hero d-flex align-items-center" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center text-white">
+                    
+                    <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInUp">
+                       Welcome To <br> Dr. Kiran Neuro Centre
+                    </h1>
+                    <p class="lead mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+                        At Dr. Kiran Neuro Centre, we combine advanced medical expertise with compassionate care.
+                        Our commitment to your health is reflected in every aspect of our service.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="slot-booking.php" class="btn btn-light btn-lg rounded-pill px-4">
+                            Book Appointment <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-4">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-5 bg-light" id="services">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold text-primary">Our Services</h2>
+                <p class="text-muted">Comprehensive Neurological Care</p>
+            </div>
+            <div class="row g-4">
+                <!-- Service Cards -->
+                <div class="col-md-4">
+                    <div class="card service-card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="service-icon rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-head-side-virus text-white fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">HEADACHE</h4>
+                            <p class="text-muted mb-0">
+                                • Advanced headache diagnosis<br>
+                                • Treatment for migraines<br>
+                                • Stress management<br>
+                                • Neurological evaluation
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card service-card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="service-icon rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-brain text-white fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">FITS (Seizures)</h4>
+                            <p class="text-muted mb-0">
+                                • Epilepsy screening & diagnosis<br>
+                                • EEG & brain imaging tests<br>
+                                • Medication & seizure control management<br>
+                                • Emergency care for acute episodes
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card service-card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="service-icon rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-person-falling text-white fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">GIDDINESS</h4>
+                            <p class="text-muted mb-0">
+                                • Vertigo & balance disorder diagnosis<br>
+                                • Inner ear & neurological assessments<br>
+                                • Personalized treatment plans<br>
+                                • Rehabilitation & therapy sessions
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card service-card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="service-icon rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-wheelchair-move text-white fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">PARALYSIS</h4>
+                            <p class="text-muted mb-0">
+                                • Stroke rehabilitation programs<br>
+                                • Physiotherapy & mobility assistance<br>
+                                • Neurotherapy for recovery<br>
+                                • Assistive devices & long-term care
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card service-card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="service-icon rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-temperature-high text-white fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">BRAIN FEVER</h4>
+                            <p class="text-muted mb-0">
+                                • Rapid diagnosis & critical care<br>
+                                • Treatment for meningitis & encephalitis<br>
+                                • Specialized fever management<br>
+                                • Intensive monitoring & infection control
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card service-card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="service-icon rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-brain text-white fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">MEMORY LOSS</h4>
+                            <p class="text-muted mb-0">
+                                • Early diagnosis of dementia & Alzheimer's<br>
+                                • Cognitive therapy & brain exercises<br>
+                                • Medication & lifestyle adjustments<br>
+                                • Family counseling & support
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Working Hours Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-3 g-4">
+                <div class="col">
+                    <div class="card gradient-bg text-white border-0 h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="text-center border-bottom border-white border-opacity-25 pb-3 mb-4">Working Hours</h4>
+                                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-white border-opacity-25">
+                                    <div>Monday - Saturday</div>
+                                    <div>
+                                        <div>9 AM - 1 PM</div>
+                                        <div>6 PM - 8 PM</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div>Sunday</div>
+                                    <div class="text-warning">Closed</div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h6 class="fs-5 mb-3">Need an Appointment?</h6>
+                                <div class="d-grid gap-3">
+                                    <a href="slot-booking.php" class="btn btn-light rounded-pill fw-bold">ONLINE APPOINTMENT</a>
+                                    <a href="#" class="btn btn-outline-light rounded-pill fw-bold">EMERGENCY CALL</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 h-100">
+                        <img src="img/hospital-interir.jpg" alt="working hours" class="img-fluid h-100 w-100 object-fit-cover rounded">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <div>
+                                <h1 class="text-primary position-relative pb-2 mb-4">Introduction</h1>
+                                <p class="text-muted">Dr. Kiran Neuro Centre is committed to delivering world-class, compassionate care for all neurological needs. We specialize in advanced diagnostics, personalized treatments, and innovative neurorehabilitation, ensuring the best outcomes with a patient-first approach. Your health is our priority—experience expert care with us.</p>
+
+                                <ul class="list-unstyled my-4">
+                                    <li class="position-relative ps-4 mb-2 text-muted custom-dash">20+ Years of Experience</li>
+                                    <li class="position-relative ps-4 mb-2 text-muted custom-dash">Best Neurology Hospital In Bhimavaram</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 class="fs-5 mb-2 text-primary">Dr. Kiran Neuro Centre</h6>
+                                <p class="text-muted mb-0">Team of Dr. Kiran Neuro Centre</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+   
+
+    <!-- Contact Section -->
+    <section class="py-5 bg-light" id="contact">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h2 class="h3 fw-bold mb-4">Get in Touch</h2>
+                            <form action="mailto:kiranneurocentre@gmail.com" method="post" enctype="text/plain">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <textarea name="message" class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                            Send Message <i class="fas fa-paper-plane ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card gradient-bg text-white border-0 h-100">
+                        <div class="card-body p-4">
+                            <h2 class="h3 fw-bold mb-4">Contact Information</h2>
+                            <div class="d-flex mb-4">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">Address</h6>
+                                    <p class="mb-0">Juvvalapalem Road, Vantena, near Adda, Bhimavaram, Andhra Pradesh 534202</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-4">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-phone fa-2x"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">Phone</h6>
+                                    <p class="mb-0">+814-385-2529/814-385-2528</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-4">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-envelope fa-2x"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">Email</h6>
+                                    <p class="mb-0">kiranneurocentre@gmail.com</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-4">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">Working Hours</h6>
+                                    <pre class="mb-0">
+Mon - Sat: 9:00 AM - 1:00 PM  
+           6:00 PM - 8:00 PM</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-5 pb-3 text-white">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <img src="img/klogo-.png" alt="Dr. Kiran" height="60" class="mb-4">
+                    <p class="opacity-75">Dr. Kiran Neuro Centre provides expert neurological care with a focus on patient well-being and advanced treatment methods.</p>
+                </div>
+                <!-- Quick Links -->
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#home" class="text-white text-decoration-none opacity-75">Home</a></li>
+                        <li class="mb-2"><a href="#services" class="text-white text-decoration-none opacity-75">Services</a></li>
+                        <li class="mb-2"><a href="#about" class="text-white text-decoration-none opacity-75">About Us</a></li>
+                        <li class="mb-2"><a href="#contact" class="text-white text-decoration-none opacity-75">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Services -->
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="mb-4">Our Services</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Headache Treatment</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Seizure Management</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Paralysis Care</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75">Memory Loss Treatment</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 opacity-25">
+            <p class="text-center mb-0 opacity-75">&copy; 2024 Dr. Kiran Neuro Centre. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-</html>
+</html> 
