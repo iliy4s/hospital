@@ -2,6 +2,10 @@
 session_start();
 require 'connect.php';
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Initialize variables to retain form values after submission
 $patientFirstName = $patientLastName = $patientPreferredName = $contactNumber = $email = '';
 $dobMonth = $dobDay = $dobYear = $preferredSpecialty = $reasonForAppointment = '';
@@ -20,8 +24,101 @@ $appointmentTime = $_SESSION['appointment_time'] ?? '';
 
 // Display error or redirect if session data is missing
 if (!$appointmentDate || !$appointmentTime) {
-    die("Appointment date and time are required.");
+    error_log("Missing appointment data in session. Date: " . ($appointmentDate ?: 'empty') . ", Time: " . ($appointmentTime ?: 'empty'));
+    $_SESSION['booking_error'] = "Your session has expired or is invalid. Please select a time slot again.";
+    header("Location: slot-booking.php");
+    exit;
 }
+
+// Standardize time format for consistency
+function standardizeTimeFormat($timeStr) {
+    // Remove extra spaces
+    $timeStr = trim($timeStr);
+    
+    // Check if there's a space before AM/PM
+    if (preg_match('/(\d+:\d+)\s*(AM|PM)/i', $timeStr, $matches)) {
+        return $matches[1] . ' ' . strtoupper($matches[2]);
+    }
+    
+    // If no space before AM/PM, add one
+    if (preg_match('/(\d+:\d+)(AM|PM)/i', $timeStr, $matches)) {
+        return $matches[1] . ' ' . strtoupper($matches[2]);
+    }
+    
+    // Return original if no pattern matched
+    return $timeStr;
+}
+
+// Standardize the appointment time format
+$appointmentTime = standardizeTimeFormat($appointmentTime);
+
+// Check if the time is 11:00 AM (which should be disabled)
+if (preg_match('/^11:00\s*AM$/i', $appointmentTime)) {
+    error_log("Registration attempt for disabled 11:00 AM slot: Date: $appointmentDate");
+    $_SESSION['booking_error'] = "Sorry, appointments at 11:00 AM are not available. Please select another time.";
+    header("Location: slot-booking.php");
+    exit;
+}
+
+// Check if the selected date and time are in the past or too close to current time
+try {
+    $selectedDateTime = new DateTime($appointmentDate . ' ' . $appointmentTime);
+    $currentDateTime = new DateTime();
+    $currentDateTime->modify('+4 minutes'); // Reduced from 15 to 4 minutes buffer
+    
+    if ($selectedDateTime < $currentDateTime) {
+        error_log("Registration attempt for past time: Date: $appointmentDate, Time: $appointmentTime");
+        $_SESSION['booking_error'] = "Sorry, you cannot book appointments in the past or too close to the current time. Please select a future time slot.";
+        header("Location: slot-booking.php");
+        exit;
+    }
+} catch (Exception $e) {
+    error_log("Error parsing date/time in registration-form.php: " . $e->getMessage());
+    // Continue with the rest of the checks even if date parsing fails
+}
+
+// First, verify the slot is still available before processing - improved query with error handling
+try {
+    $checkQuery = "SELECT * FROM appointments 
+                  WHERE appointment_date = ? 
+                  AND appointment_time = ?";  // Removed status filter to check ALL appointments
+    $checkStmt = $conn->prepare($checkQuery);
+    
+    if (!$checkStmt) {
+        throw new Exception("Database prepare error: " . $conn->error);
+    }
+    
+    $checkStmt->bind_param("ss", $appointmentDate, $appointmentTime);
+    
+    if (!$checkStmt->execute()) {
+        throw new Exception("Database execute error: " . $checkStmt->error);
+    }
+    
+    $checkResult = $checkStmt->get_result();
+    
+    if ($checkResult->num_rows > 0) {
+        // Get details about the conflicting appointment for logging
+        $conflictRow = $checkResult->fetch_assoc();
+        $conflictId = $conflictRow['id'] ?? 'unknown';
+        
+        // Enhanced error logging
+        error_log("BOOKING CONFLICT: Attempted to access registration form for date: $appointmentDate, time: $appointmentTime, which is already booked (appointment ID: $conflictId)");
+        
+        // Slot already booked - redirect back with error
+        $_SESSION['booking_error'] = "Sorry, this time slot has already been booked by someone else. Please select another time.";
+        header("Location: slot-booking.php?error=already_booked&time=" . urlencode($appointmentTime));
+        exit;
+    }
+} catch (Exception $e) {
+    // Log the error and show a user-friendly message
+    error_log("Error checking slot availability: " . $e->getMessage());
+    $_SESSION['booking_error'] = "We encountered a technical issue. Please try again or contact support.";
+    header("Location: slot-booking.php");
+    exit;
+}
+
+// Log successful availability check
+error_log("Slot availability verified for date: $appointmentDate, time: $appointmentTime - proceeding to registration form");
 
 // Format the selected date for display
 $formattedDate = '';
@@ -56,9 +153,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $dobMonth = $_POST['dobMonth'];
         $dobDay = $_POST['dobDay'];
         $dobYear = $_POST['dobYear'];
-        // Validate date is valid
-        if (!checkdate(intval($dobMonth), intval($dobDay), intval($dobYear))) {
-            $errors['dob'] = 'Please enter a valid date';
+        
+        // Validate date format
+        if (!checkdate($dobMonth, $dobDay, $dobYear)) {
+            $errors['dob'] = 'Please enter a valid date of birth';
+        } else {
+            $dob = $dobYear . '-' . str_pad($dobMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($dobDay, 2, '0', STR_PAD_LEFT);
         }
     }
 
@@ -67,8 +167,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['contactNumber'] = 'Contact number is required';
     } else {
         $contactNumber = test_input($_POST['contactNumber']);
+        // Simple validation for phone number format
         if (!preg_match("/^[0-9\-\(\)\/\+\s]*$/", $contactNumber)) {
-            $errors['contactNumber'] = 'Invalid phone number format';
+            $errors['contactNumber'] = 'Please enter a valid contact number';
         }
     }
 
@@ -78,11 +179,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $email = test_input($_POST['email']);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Invalid email format';
+            $errors['email'] = 'Please enter a valid email address';
         }
     }
 
-    // Process preferred specialty (optional)
+    // Process specialty (optional)
     $preferredSpecialty = test_input($_POST['preferredSpecialty'] ?? '');
 
     // Validate reason for appointment
@@ -92,44 +193,92 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $reasonForAppointment = test_input($_POST['reasonForAppointment']);
     }
 
-    // If no errors, process the form submission
+    // If no errors, proceed with form submission
     if (empty($errors)) {
-        // Format the date of birth
-        $dob = $dobYear . '-' . sprintf('%02d', $dobMonth) . '-' . sprintf('%02d', $dobDay);
+        // Start transaction for data consistency
+        $conn->begin_transaction();
         
-        // Check if the selected slot is already booked
-        $checkSlotQuery = "SELECT * FROM appointments WHERE appointment_date = ? AND appointment_time = ?";
-        $stmt = $conn->prepare($checkSlotQuery);
-        $stmt->bind_param("ss", $appointmentDate, $appointmentTime);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $errors['appointmentSlot'] = 'This time slot is already booked. Please select another time.';
-        } else {
-            // Insert data into the database
-            $insertQuery = "INSERT INTO appointments (appointment_date, appointment_time, patient_first_name, patient_last_name, patient_preferred_name, dob, contact_number, email, preferred_specialty, reason_for_appointment) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            $stmt = $conn->prepare($insertQuery);
-            $stmt->bind_param("ssssssssss", 
+        try {
+            // Check one more time if the slot is still available - CRITICAL CHECK
+            $checkStmt->execute();
+            $checkResult = $checkStmt->get_result();
+            
+            if ($checkResult->num_rows > 0) {
+                // Get details about the conflicting appointment for logging
+                $conflictRow = $checkResult->fetch_assoc();
+                $conflictId = $conflictRow['id'] ?? 'unknown';
+                
+                // Enhanced error logging
+                error_log("BOOKING CONFLICT DURING FORM SUBMISSION: Date: $appointmentDate, Time: $appointmentTime was booked while user was filling form (conflict ID: $conflictId)");
+                
+                // Rollback any changes
+                $conn->rollback();
+                
+                // Slot was taken during form completion
+                $errors['slotTaken'] = "This time slot has been booked by someone else while you were filling the form. Please select another time.";
+                // Redirect back to slot booking
+                $_SESSION['booking_error'] = $errors['slotTaken'];
+                header("Location: slot-booking.php?error=race_condition");
+                exit;
+            }
+            
+            // Insert the appointment with default status of 'confirmed'
+            $query = "INSERT INTO appointments (
+                appointment_date, 
+                appointment_time, 
+                patient_first_name, 
+                patient_last_name, 
+                patient_preferred_name, 
+                dob, 
+                contact_number, 
+                email, 
+                preferred_specialty, 
+                reason_for_appointment,
+                status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed')";
+            
+            $stmt = $conn->prepare($query);
+            
+            if (!$stmt) {
+                throw new Exception("Database prepare error: " . $conn->error);
+            }
+            
+            $stmt->bind_param(
+                "ssssssssss", 
                 $appointmentDate, 
                 $appointmentTime, 
                 $patientFirstName, 
-                $patientLastName,
-                $patientPreferredName,
+                $patientLastName, 
+                $patientPreferredName, 
                 $dob, 
                 $contactNumber, 
-                $email,
-                $preferredSpecialty,
+                $email, 
+                $preferredSpecialty, 
                 $reasonForAppointment
             );
-
-            if ($stmt->execute()) {
-                $formSubmitted = true;
-            } else {
-                $errors['database'] = 'Failed to submit the appointment. Please try again.';
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Database execute error: " . $stmt->error);
             }
+            
+            // Commit the transaction
+            $conn->commit();
+            
+            // Log successful booking with appointment ID
+            $newAppointmentId = $conn->insert_id;
+            error_log("SUCCESS: Appointment #$newAppointmentId booked for Date: $appointmentDate, Time: $appointmentTime, Patient: $patientFirstName $patientLastName");
+            
+            // Clear session appointment data
+            unset($_SESSION['appointment_date']);
+            unset($_SESSION['appointment_time']);
+            
+            // Set submission flag for success message
+            $formSubmitted = true;
+        } catch (Exception $e) {
+            // Rollback on any exception
+            $conn->rollback();
+            $errors['database'] = 'An error occurred while processing your request.';
+            error_log("Exception during appointment booking: " . $e->getMessage());
         }
     }
 }
@@ -160,6 +309,9 @@ $specialties = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Appointment Request Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -200,7 +352,7 @@ $specialties = [
                 </svg>
                 <h2 class="text-2xl font-bold mb-2 text-green-600">Appointment Request Submitted</h2>
                 <p class="mb-6 text-gray-600">Thank you, <?php echo htmlspecialchars($patientFirstName); ?>! We'll contact you shortly to confirm your appointment for <?php echo htmlspecialchars($formattedDate); ?> at <?php echo htmlspecialchars($appointmentTime); ?>.</p>
-                <a href="slot-booking.php" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Return to Home</a>
+                <a href="index.php" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Return to Home</a>
             </div>
         <?php else: ?>
             <!-- Appointment Summary -->
@@ -341,10 +493,26 @@ $specialties = [
     </div>
 
     <script>
-        // Any client-side JavaScript for form validation or enhancements can go here
-        document.addEventListener('DOMContentLoaded', function() {
-            // Example: Form validation or interactive elements
-        });
+        // Prevent form resubmission on page refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        
+        // Periodically check if the slot is still available
+        <?php if (!$formSubmitted): ?>
+        let checkInterval = setInterval(function() {
+            fetch('check_slot.php?date=<?php echo urlencode($appointmentDate); ?>&time=<?php echo urlencode($appointmentTime); ?>&_=' + new Date().getTime())
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.available) {
+                        clearInterval(checkInterval);
+                        alert('This slot has just been booked by someone else. You will be redirected to select another time.');
+                        window.location.href = 'slot-booking.php?error=slot_taken_during_form';
+                    }
+                })
+                .catch(error => console.error('Error checking slot availability:', error));
+        }, 10000); // Check every 10 seconds
+        <?php endif; ?>
     </script>
 </body>
 </html>
