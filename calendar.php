@@ -12,10 +12,10 @@ require_once 'connect.php';
 // Check if admin is logged in
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     // Log the unauthorized access attempt
-    error_log("Unauthorized access attempt to admin_calendar.php. Session data: " . print_r($_SESSION, true));
+    error_log("Unauthorized access attempt to calendar.php. Session data: " . print_r($_SESSION, true));
     
     // Redirect to login page
-    header('Location: admin_login.php?error=not_logged_in');
+    header('Location: login.php?error=not_logged_in');
     exit();
 }
 
@@ -397,7 +397,7 @@ body {
                     <p class="admin-welcome mb-0">Welcome, <?php echo htmlspecialchars($_SESSION['admin_username']); ?></p>
                 </div>
                 <div>
-                    <a href="admin_login.php?logout=1" class="btn btn-light">
+                    <a href="login.php?logout=1" class="btn btn-light">
                         <i class="fas fa-sign-out-alt me-1"></i> Logout
                     </a>
                 </div>

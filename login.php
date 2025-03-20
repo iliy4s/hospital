@@ -15,13 +15,13 @@ if (isset($_GET['logout'])) {
     session_destroy();
     
     // Redirect to login page
-    header('Location: admin_login.php?logged_out=1');
+    header('Location: login.php?logged_out=1');
     exit();
 }
 
 // Check if already logged in
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: admin_calendar.php');
+    header('Location: calendar.php');
     exit();
 }
 
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['admin_username'] = $username;
             
             // Redirect to admin dashboard
-            header('Location: admin_calendar.php');
+            header('Location: calendar.php');
             exit();
         } else {
             // Login failed

@@ -79,5 +79,5 @@ try {
     echo "<p>❌ Error setting up admin user: " . $e->getMessage() . "</p>";
 }
 
-echo "<p>Database initialization complete! You can now <a href='admin_login.php'>login to the admin area</a>.</p>";
+echo "<p>Database initialization complete! You can now <a href='login.php'>login to the admin area</a>.</p>";
 ?> 

@@ -221,9 +221,6 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="admin_login.php" class="btn btn-outline-primary ms-3 d-none d-lg-inline-block">
-                        <i class="fas fa-user-shield me-2"></i>Admin Login
-                    </a>
                     <a href="slot-booking.php" class="btn emergency-btn ms-3 d-none d-lg-inline-block">
                         Book Appointment
                     </a>
