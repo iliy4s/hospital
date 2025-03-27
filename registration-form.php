@@ -127,168 +127,218 @@ if (!empty($appointmentDate)) {
     $formattedDate = $dateObj->format('l, F j, Y'); // e.g., Monday, March 10, 2025
 }
 
+// Enhanced test_input function
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    return $data;
+}
+
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate first name
-    if (empty($_POST['patientFirstName'])) {
-        $errors['patientFirstName'] = 'First name is required';
-    } else {
-        $patientFirstName = test_input($_POST['patientFirstName']);
+    // Add CSRF protection
+    if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token']) || 
+        $_SESSION['csrf_token'] !== $_POST['csrf_token']) {
+        $errors['csrf'] = 'Invalid form submission';
+        error_log("CSRF token validation failed");
+        exit;
     }
 
-    // Validate last name
-    if (empty($_POST['patientLastName'])) {
-        $errors['patientLastName'] = 'Last name is required';
+    // Add submission timestamp check to prevent double submission
+    if (isset($_SESSION['last_submission_time']) && 
+        time() - $_SESSION['last_submission_time'] < 5) {
+        $errors['submission'] = 'Please wait before submitting again.';
     } else {
-        $patientLastName = test_input($_POST['patientLastName']);
-    }
-
-    // Process preferred name (optional)
-    $patientPreferredName = test_input($_POST['patientPreferredName'] ?? '');
-
-    // Validate date of birth
-    if (empty($_POST['dobMonth']) || empty($_POST['dobDay']) || empty($_POST['dobYear'])) {
-        $errors['dob'] = 'Complete date of birth is required';
-    } else {
-        $dobMonth = $_POST['dobMonth'];
-        $dobDay = $_POST['dobDay'];
-        $dobYear = $_POST['dobYear'];
+        $_SESSION['last_submission_time'] = time();
         
-        // Validate date format
-        if (!checkdate($dobMonth, $dobDay, $dobYear)) {
-            $errors['dob'] = 'Please enter a valid date of birth';
+        // Validate all required fields
+        $validations = [
+            'patientFirstName' => [
+                'value' => $_POST['patientFirstName'] ?? '',
+                'pattern' => "/^[a-zA-Z-' ]{1,50}$/",
+                'error' => 'Only letters, hyphens and spaces allowed'
+            ],
+            'patientLastName' => [
+                'value' => $_POST['patientLastName'] ?? '',
+                'pattern' => "/^[a-zA-Z-' ]{1,50}$/",
+                'error' => 'Only letters, hyphens and spaces allowed'
+            ],
+            'contactNumber' => [
+                'value' => $_POST['contactNumber'] ?? '',
+                'pattern' => "/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/",
+                'error' => 'Please enter a valid phone number'
+            ],
+            'email' => [
+                'value' => $_POST['email'] ?? '',
+                'validator' => function($email) {
+                    return filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($email) <= 254;
+                },
+                'error' => 'Please enter a valid email address'
+            ],
+            'reasonForAppointment' => [
+                'value' => $_POST['reasonForAppointment'] ?? '',
+                'validator' => function($reason) {
+                    return !empty($reason) && strlen($reason) <= 1000;
+                },
+                'error' => 'Reason is required and must be less than 1000 characters'
+            ]
+        ];
+        
+        // Process validations
+        foreach ($validations as $field => $config) {
+            if (empty($config['value'])) {
+                $errors[$field] = ucfirst($field) . ' is required';
+            } else {
+                ${$field} = test_input($config['value']);
+                
+                if (isset($config['pattern'])) {
+                    if (!preg_match($config['pattern'], ${$field})) {
+                        $errors[$field] = $config['error'];
+                    }
+                } else if (isset($config['validator'])) {
+                    if (!$config['validator'](${$field})) {
+                        $errors[$field] = $config['error'];
+                    }
+                }
+            }
+        }
+        
+        // Optional fields
+        if (!empty($_POST['patientPreferredName'])) {
+            $patientPreferredName = test_input($_POST['patientPreferredName']);
+        }
+        
+        if (!empty($_POST['preferredSpecialty'])) {
+            $preferredSpecialty = test_input($_POST['preferredSpecialty']);
+            if (!in_array($preferredSpecialty, $specialties)) {
+                $errors['preferredSpecialty'] = 'Please select a valid specialty';
+            }
+        }
+        
+        // Date of birth validation
+        if (empty($_POST['dobMonth']) || empty($_POST['dobDay']) || empty($_POST['dobYear'])) {
+            $errors['dob'] = 'Complete date of birth is required';
         } else {
-            $dob = $dobYear . '-' . str_pad($dobMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($dobDay, 2, '0', STR_PAD_LEFT);
+            $dobMonth = $_POST['dobMonth'];
+            $dobDay = $_POST['dobDay'];
+            $dobYear = $_POST['dobYear'];
+            
+            if (!checkdate($dobMonth, $dobDay, $dobYear)) {
+                $errors['dob'] = 'Please enter a valid date of birth';
+            } else {
+                $dob = $dobYear . '-' . str_pad($dobMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($dobDay, 2, '0', STR_PAD_LEFT);
+            }
         }
-    }
-
-    // Validate contact number
-    if (empty($_POST['contactNumber'])) {
-        $errors['contactNumber'] = 'Contact number is required';
-    } else {
-        $contactNumber = test_input($_POST['contactNumber']);
-        // Simple validation for phone number format
-        if (!preg_match("/^[0-9\-\(\)\/\+\s]*$/", $contactNumber)) {
-            $errors['contactNumber'] = 'Please enter a valid contact number';
-        }
-    }
-
-    // Validate email
-    if (empty($_POST['email'])) {
-        $errors['email'] = 'Email is required';
-    } else {
-        $email = test_input($_POST['email']);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid email address';
-        }
-    }
-
-    // Process specialty (optional)
-    $preferredSpecialty = test_input($_POST['preferredSpecialty'] ?? '');
-
-    // Validate reason for appointment
-    if (empty($_POST['reasonForAppointment'])) {
-        $errors['reasonForAppointment'] = 'Reason for appointment is required';
-    } else {
-        $reasonForAppointment = test_input($_POST['reasonForAppointment']);
-    }
-
-    // If no errors, proceed with form submission
-    if (empty($errors)) {
-        // Start transaction for data consistency
-        $conn->begin_transaction();
         
-        try {
-            // Check one more time if the slot is still available - CRITICAL CHECK
-            $checkStmt->execute();
-            $checkResult = $checkStmt->get_result();
-            
-            if ($checkResult->num_rows > 0) {
-                // Get details about the conflicting appointment for logging
-                $conflictRow = $checkResult->fetch_assoc();
-                $conflictId = $conflictRow['id'] ?? 'unknown';
+        // Appointment validation
+        if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $appointmentDate)) {
+            $errors['appointment'] = 'Invalid appointment date format';
+        }
+        
+        if (!preg_match("/^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(?:AM|PM)$/i", $appointmentTime)) {
+            $errors['appointment'] = 'Invalid appointment time format';
+        }
+
+        // If no errors, proceed with database insertion
+        if (empty($errors)) {
+            try {
+                $conn->begin_transaction();
+
+                // Double check slot availability with locking
+                $checkSlotSql = "SELECT id FROM appointments 
+                               WHERE appointment_date = ? 
+                               AND appointment_time = ?
+                               AND status != 'cancelled'
+                               FOR UPDATE";
                 
-                // Enhanced error logging
-                error_log("BOOKING CONFLICT DURING FORM SUBMISSION: Date: $appointmentDate, Time: $appointmentTime was booked while user was filling form (conflict ID: $conflictId)");
+                $checkStmt = $conn->prepare($checkSlotSql);
+                if (!$checkStmt) {
+                    throw new Exception("Failed to prepare slot check: " . $conn->error);
+                }
                 
-                // Rollback any changes
+                $checkStmt->bind_param("ss", $appointmentDate, $appointmentTime);
+                $checkStmt->execute();
+                $result = $checkStmt->get_result();
+                
+                if ($result->num_rows > 0) {
+                    throw new Exception("Slot already booked");
+                }
+
+                // Generate booking reference
+                $bookingReference = 'APT-' . date('Ymd') . '-' . substr(uniqid(), -5);
+                
+                // Insert appointment
+                $insertSql = "INSERT INTO appointments (
+                    appointment_date, appointment_time, patient_first_name, patient_last_name, 
+                    patient_preferred_name, dob, contact_number, email, preferred_specialty, 
+                    reason_for_appointment, status, created_at, booking_reference
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', NOW(), ?)";
+                
+                $stmt = $conn->prepare($insertSql);
+                if (!$stmt) {
+                    throw new Exception("Failed to prepare insert: " . $conn->error);
+                }
+                
+                $stmt->bind_param(
+                    "ssssssssss", 
+                    $appointmentDate, $appointmentTime, $patientFirstName, $patientLastName, 
+                    $patientPreferredName, $dob, $contactNumber, $email, $preferredSpecialty, 
+                    $reasonForAppointment, $bookingReference
+                );
+                
+                if (!$stmt->execute()) {
+                    throw new Exception("Failed to insert appointment: " . $stmt->error);
+                }
+                
+                $newAppointmentId = $stmt->insert_id;
+                
+                // Log and commit
+                error_log("Appointment booked successfully - ID: $newAppointmentId, Ref: $bookingReference");
+                $conn->commit();
+                
+                // Store booking info in session
+                $_SESSION['booking_reference'] = $bookingReference;
+                $_SESSION['appointment_id'] = $newAppointmentId;
+                
+                // Clear form session data
+                unset($_SESSION['appointment_date']);
+                unset($_SESSION['appointment_time']);
+                
+                // Success flag
+                $formSubmitted = true;
+                
+                // Send confirmation email
+                try {
+                    sendConfirmationEmail($email, [
+                        'reference' => $bookingReference,
+                        'date' => $formattedDate,
+                        'time' => $appointmentTime,
+                        'name' => $patientFirstName
+                    ]);
+                } catch (Exception $e) {
+                    error_log("Failed to send confirmation email: " . $e->getMessage());
+                }
+                
+            } catch (Exception $e) {
                 $conn->rollback();
+                error_log("Appointment booking failed: " . $e->getMessage());
                 
-                // Slot was taken during form completion
-                $errors['slotTaken'] = "This time slot has been booked by someone else while you were filling the form. Please select another time.";
-                // Redirect back to slot booking
-                $_SESSION['booking_error'] = $errors['slotTaken'];
-                header("Location: slot-booking.php?error=race_condition");
-                exit;
+                if ($e->getMessage() === "Slot already booked") {
+                    $_SESSION['booking_error'] = "This slot was just taken. Please select another time.";
+                    header("Location: slot-booking.php");
+                    exit;
+                }
+                
+                $errors['database'] = "Failed to process your request. Please try again.";
             }
-            
-            // Insert the appointment with default status of 'confirmed'
-            $query = "INSERT INTO appointments (
-                appointment_date, 
-                appointment_time, 
-                patient_first_name, 
-                patient_last_name, 
-                patient_preferred_name, 
-                dob, 
-                contact_number, 
-                email, 
-                preferred_specialty, 
-                reason_for_appointment,
-                status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed')";
-            
-            $stmt = $conn->prepare($query);
-            
-            if (!$stmt) {
-                throw new Exception("Database prepare error: " . $conn->error);
-            }
-            
-            $stmt->bind_param(
-                "ssssssssss", 
-                $appointmentDate, 
-                $appointmentTime, 
-                $patientFirstName, 
-                $patientLastName, 
-                $patientPreferredName, 
-                $dob, 
-                $contactNumber, 
-                $email, 
-                $preferredSpecialty, 
-                $reasonForAppointment
-            );
-            
-            if (!$stmt->execute()) {
-                throw new Exception("Database execute error: " . $stmt->error);
-            }
-            
-            // Commit the transaction
-            $conn->commit();
-            
-            // Log successful booking with appointment ID
-            $newAppointmentId = $conn->insert_id;
-            error_log("SUCCESS: Appointment #$newAppointmentId booked for Date: $appointmentDate, Time: $appointmentTime, Patient: $patientFirstName $patientLastName");
-            
-            // Clear session appointment data
-            unset($_SESSION['appointment_date']);
-            unset($_SESSION['appointment_time']);
-            
-            // Set submission flag for success message
-            $formSubmitted = true;
-        } catch (Exception $e) {
-            // Rollback on any exception
-            $conn->rollback();
-            $errors['database'] = 'An error occurred while processing your request.';
-            error_log("Exception during appointment booking: " . $e->getMessage());
         }
     }
 }
 
-// Function to sanitize input data
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 // Get list of months, days, and years for dropdowns
@@ -340,6 +390,48 @@ $specialties = [
             font-weight: 600;
             color: #7047d1;
         }
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 100%;
+            padding: 0;
+        }
+        .card {
+            margin: 0;
+            box-shadow: none;
+            padding: 0.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .card {
+                padding: 1rem;
+            }
+            .form-group {
+                margin-bottom: 0.75rem;
+            }
+        }
+        .spinner-border-sm {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 0.2em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen py-8">
@@ -362,10 +454,14 @@ $specialties = [
             </div>
 
             <h2 class="text-xl font-bold mb-4 text-center">Patient Information</h2>
-            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <form id="registrationForm" method="POST" action="process_appointment.php">
                 <!-- Hidden fields to preserve appointment information -->
                 <input type="hidden" name="appointmentDate" value="<?php echo htmlspecialchars($appointmentDate); ?>">
                 <input type="hidden" name="appointmentTime" value="<?php echo htmlspecialchars($appointmentTime); ?>">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                <!-- Form message container for showing success/error messages -->
+                <div id="formMessage" class="hidden mb-4 p-4 rounded"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <!-- First Name -->
@@ -484,8 +580,8 @@ $specialties = [
                     </div>
                 <?php endif; ?>
                 
-                <!-- Submit Button -->
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium transition">
+                <!-- Submit Button with loading state support -->
+                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium transition">
                     Submit Appointment Request
                 </button>
             </form>
@@ -498,21 +594,432 @@ $specialties = [
             window.history.replaceState(null, null, window.location.href);
         }
         
-        // Periodically check if the slot is still available
-        <?php if (!$formSubmitted): ?>
-        let checkInterval = setInterval(function() {
-            fetch('check_slot.php?date=<?php echo urlencode($appointmentDate); ?>&time=<?php echo urlencode($appointmentTime); ?>&_=' + new Date().getTime())
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.available) {
-                        clearInterval(checkInterval);
-                        alert('This slot has just been booked by someone else. You will be redirected to select another time.');
-                        window.location.href = 'slot-booking.php?error=slot_taken_during_form';
+        document.addEventListener('DOMContentLoaded', function() {
+            const registrationForm = document.getElementById('registrationForm');
+            const formMessage = document.getElementById('formMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (registrationForm) {
+                // Form submission with AJAX
+                registrationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Validate form before submission
+                    if (!validateForm()) {
+                        return false;
                     }
-                })
-                .catch(error => console.error('Error checking slot availability:', error));
-        }, 10000); // Check every 10 seconds
-        <?php endif; ?>
+                    
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border-sm"></span> Processing...';
+                    
+                    // Clear previous messages
+                    formMessage.innerHTML = '';
+                    formMessage.className = 'hidden mb-4 p-4 rounded';
+                    
+                    // Get form data
+                    const formData = new FormData(this);
+                    
+                    // Send AJAX request with timeout
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+                    
+                    fetch('process_appointment.php', {
+                        method: 'POST',
+                        body: formData,
+                        signal: controller.signal
+                    })
+                    .then(response => {
+                        clearTimeout(timeoutId);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            showFormMessage('success', 'Appointment booked successfully! Redirecting to confirmation page...');
+                            
+                            // Redirect to confirmation page after a short delay
+                            setTimeout(() => {
+                                window.location.href = 'confirmation.php';
+                            }, 1500);
+                        } else {
+                            // Show error message
+                            let errorMsg = data.message || 'An error occurred. Please try again.';
+                            
+                            // Add field-specific errors if any
+                            if (data.errors && Object.keys(data.errors).length > 0) {
+                                // Display field errors
+                                for (const [field, error] of Object.entries(data.errors)) {
+                                    const fieldElement = document.getElementById(field) || 
+                                                        document.querySelector(`[name="${field}"]`);
+                                    if (fieldElement) {
+                                        showError(fieldElement, error);
+                                    }
+                                }
+                                errorMsg = 'Please correct the errors and try again.';
+                            }
+                            
+                            showFormMessage('error', errorMsg);
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = 'Submit Appointment Request';
+                        }
+                    })
+                    .catch(error => {
+                        clearTimeout(timeoutId);
+                        console.error('Error:', error);
+                        if (error.name === 'AbortError') {
+                            showFormMessage('error', 'Request timed out. The server is taking too long to respond.');
+                        } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                            showFormMessage('error', 'Network error. Please check your internet connection and try again.');
+                        } else {
+                            showFormMessage('error', 'Error processing your request. Please try again or contact support.');
+                        }
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Submit Appointment Request';
+                    });
+                });
+                
+                // Add validation listeners to fields
+                addFieldValidationListeners();
+            }
+            
+            // Check slot availability periodically
+            <?php if (!$formSubmitted): ?>
+            let checkInterval = setInterval(function() {
+                fetch('check_slot.php?date=<?php echo urlencode($appointmentDate); ?>&time=<?php echo urlencode($appointmentTime); ?>&_=' + new Date().getTime())
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.available) {
+                            clearInterval(checkInterval);
+                            showFormMessage('error', 'This slot has just been booked by someone else. You will be redirected to select another time.');
+                            setTimeout(() => {
+                                window.location.href = 'slot-booking.php?error=slot_taken_during_form';
+                            }, 2000);
+                        }
+                    })
+                    .catch(error => console.error('Error checking slot availability:', error));
+            }, 30000); // Check every 30 seconds
+            <?php endif; ?>
+        });
+        
+        // Helper function to show form messages
+        function showFormMessage(type, message) {
+            const formMessage = document.getElementById('formMessage');
+            formMessage.innerHTML = message;
+            formMessage.classList.remove('hidden');
+            
+            if (type === 'success') {
+                formMessage.className = 'mb-4 p-4 rounded bg-green-100 text-green-700 border border-green-300';
+            } else if (type === 'error') {
+                formMessage.className = 'mb-4 p-4 rounded bg-red-100 text-red-700 border border-red-300';
+            } else {
+                formMessage.className = 'mb-4 p-4 rounded bg-blue-100 text-blue-700 border border-blue-300';
+            }
+            
+            // Scroll to message
+            formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Validation functions
+        function validateForm() {
+            clearAllErrors();
+            
+            let isValid = true;
+            let firstErrorField = null;
+            
+            // Required fields validation
+            const validations = [
+                { field: 'patientFirstName', validate: validateName, errorMsg: 'First name is required and must contain only letters' },
+                { field: 'patientLastName', validate: validateName, errorMsg: 'Last name is required and must contain only letters' },
+                { field: 'contactNumber', validate: validatePhone, errorMsg: 'Please enter a valid phone number' },
+                { field: 'email', validate: validateEmail, errorMsg: 'Please enter a valid email address' },
+                { field: 'reasonForAppointment', validate: (value) => value.trim().length > 0, errorMsg: 'Reason for appointment is required' }
+            ];
+            
+            // Run all validations
+            for (const v of validations) {
+                const field = document.getElementById(v.field);
+                if (field && !v.validate(field.value)) {
+                    showError(field, v.errorMsg);
+                    isValid = false;
+                    if (!firstErrorField) firstErrorField = field;
+                }
+            }
+            
+            // Date of birth validation
+            const dobMonth = document.querySelector('select[name="dobMonth"]');
+            const dobDay = document.querySelector('select[name="dobDay"]');
+            const dobYear = document.querySelector('select[name="dobYear"]');
+            
+            if (dobMonth && dobDay && dobYear) {
+                if (!validateDOB(dobMonth.value, dobDay.value, dobYear.value)) {
+                    const fields = [dobMonth, dobDay, dobYear];
+                    fields.forEach(field => field.classList.add('is-invalid', 'border-red-500'));
+                    showError(dobMonth, 'Please enter a valid date of birth', true);
+                    isValid = false;
+                    if (!firstErrorField) firstErrorField = dobMonth;
+                }
+            }
+            
+            // Scroll to first error
+            if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErrorField.focus();
+            }
+            
+            return isValid;
+        }
+        
+        // Helper validation functions
+        function validateName(value) {
+            return value.trim().length > 0 && /^[a-zA-Z\-\' ]{1,50}$/.test(value);
+        }
+        
+        function validatePhone(value) {
+            return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value);
+        }
+        
+        function validateEmail(value) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+        
+        function validateDOB(month, day, year) {
+            // Basic date validation
+            if (!month || !day || !year) return false;
+            
+            // Check if date is valid
+            const dob = new Date(year, month - 1, day);
+            if (dob == 'Invalid Date') return false;
+            
+            // Check if date is not in the future
+            const today = new Date();
+            if (dob > today) return false;
+            
+            // Check if age is reasonable (less than 120 years)
+            const maxAge = 120;
+            const minDate = new Date();
+            minDate.setFullYear(today.getFullYear() - maxAge);
+            if (dob < minDate) return false;
+            
+            return true;
+        }
+        
+        // Error display functions
+        function showError(field, message, isDOB = false) {
+            field.classList.add('is-invalid', 'border-red-500');
+            
+            // Create error message element if it doesn't exist
+            const errorId = `${field.id || field.name}-error`;
+            let errorElement = document.getElementById(errorId);
+            
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.id = errorId;
+                errorElement.className = 'error-message';
+                
+                if (isDOB) {
+                    // For DOB, insert after the grid container
+                    const dobContainer = field.closest('div').nextElementSibling;
+                    if (dobContainer) {
+                        field.closest('div').parentNode.insertBefore(errorElement, dobContainer);
+                    }
+                } else {
+                    // For other fields, insert after the field
+                    field.parentNode.insertBefore(errorElement, field.nextSibling);
+                }
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        function clearError(field) {
+            field.classList.remove('is-invalid', 'border-red-500');
+            
+            const errorId = `${field.id || field.name}-error`;
+            const errorElement = document.getElementById(errorId);
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }
+        
+        function clearAllErrors() {
+            document.querySelectorAll('.is-invalid').forEach(field => {
+                field.classList.remove('is-invalid', 'border-red-500');
+            });
+            
+            document.querySelectorAll('.error-message').forEach(element => {
+                element.style.display = 'none';
+            });
+        }
+        
+        // Add field validation functions
+        function addFieldValidationListeners() {
+            // Add blur validation for text inputs
+            const textFields = ['patientFirstName', 'patientLastName', 'contactNumber', 'email', 'reasonForAppointment'];
+            textFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('blur', function() {
+                        validateField(this);
+                    });
+                }
+            });
+            
+            // Add change validation for select elements
+            const dobSelects = document.querySelectorAll('select[name^="dob"]');
+            dobSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const month = document.querySelector('select[name="dobMonth"]').value;
+                    const day = document.querySelector('select[name="dobDay"]').value;
+                    const year = document.querySelector('select[name="dobYear"]').value;
+                    
+                    // Only validate if all fields have values
+                    if (month && day && year) {
+                        validateDOB(month, day, year);
+                    }
+                });
+            });
+        }
+        
+        // Validate a specific field
+        function validateField(field) {
+            clearError(field);
+            
+            switch(field.id) {
+                case 'patientFirstName':
+                case 'patientLastName':
+                    if (!validateName(field.value)) {
+                        showError(field, 'Please enter a valid name (letters only)');
+                        return false;
+                    }
+                    break;
+                case 'contactNumber':
+                    if (!validatePhone(field.value)) {
+                        showError(field, 'Please enter a valid phone number');
+                        return false;
+                    }
+                    break;
+                case 'email':
+                    if (!validateEmail(field.value)) {
+                        showError(field, 'Please enter a valid email address');
+                        return false;
+                    }
+                    break;
+                case 'reasonForAppointment':
+                    if (field.value.trim().length === 0) {
+                        showError(field, 'Reason for appointment is required');
+                        return false;
+                    }
+                    break;
+            }
+            
+            return true;
+        }
     </script>
+
+    <style>
+    /* ... keep existing styles ... */
+    
+    /* Additional styles for the form message */
+    #formMessage {
+        transition: all 0.3s ease;
+    }
+    
+    /* Improve spinner visibility */
+    .spinner-border-sm {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 0.2em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border .75s linear infinite;
+        margin-right: 0.5rem;
+        vertical-align: text-bottom;
+    }
+    </style>
 </body>
 </html>
+
+<?php
+// Simplified sendConfirmationEmail function
+function sendConfirmationEmail($to, $data) {
+    // Use PHPMailer for more reliable email delivery
+    require_once 'php/php-mailer/src/PHPMailer.php';
+    require_once 'php/php-mailer/src/SMTP.php';
+    require_once 'php/php-mailer/src/Exception.php';
+    
+    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    
+    try {
+        // Recipients
+        $mail->setFrom('appointments@hospital.com', 'Hospital Appointments');
+        $mail->addAddress($to);
+        
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = "Appointment Confirmation - Ref: " . $data['reference'];
+        
+        // HTML message with simplified styling
+        $htmlMessage = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background-color: #7047d1; color: white; padding: 15px; text-align: center; }
+                .content { padding: 20px; }
+                .appointment-details { background-color: #f4e6fa; padding: 15px; margin: 15px 0; border-radius: 5px; }
+                .reference { font-weight: bold; color: #7047d1; }
+                .footer { font-size: 0.8em; color: #777; margin-top: 30px; text-align: center; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>Appointment Confirmation</h2>
+                </div>
+                <div class='content'>
+                    <p>Dear " . htmlspecialchars($data['name']) . ",</p>
+                    <p>Your appointment request has been received and confirmed.</p>
+                    
+                    <div class='appointment-details'>
+                        <p><strong>Date:</strong> " . htmlspecialchars($data['date']) . "</p>
+                        <p><strong>Time:</strong> " . htmlspecialchars($data['time']) . "</p>
+                        <p><strong>Reference:</strong> <span class='reference'>" . htmlspecialchars($data['reference']) . "</span></p>
+                    </div>
+                    
+                    <p>Please keep this reference number for your records.</p>
+                    <p>We look forward to seeing you!</p>
+                    
+                    <div class='footer'>
+                        <p>© " . date('Y') . " Hospital Appointment System</p>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>";
+        
+        // Plain text alternative
+        $textMessage = "Dear " . $data['name'] . ",\n\n";
+        $textMessage .= "Your appointment has been confirmed for:\n";
+        $textMessage .= "Date: " . $data['date'] . "\n";
+        $textMessage .= "Time: " . $data['time'] . "\n";
+        $textMessage .= "Reference: " . $data['reference'] . "\n\n";
+        $textMessage .= "We look forward to seeing you!\n\n";
+        
+        $mail->Body = $htmlMessage;
+        $mail->AltBody = $textMessage;
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Email sending failed: " . $e->getMessage());
+        throw new Exception("Failed to send confirmation email");
+    }
+}
+?>
