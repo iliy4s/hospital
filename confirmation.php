@@ -34,6 +34,8 @@ unset($_SESSION['appointment_time']);
     <title>Appointment Confirmation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <link rel="stylesheet" href="css/animations.css"><?php // Include our custom animations ?>
     <style>
         body {
             background-color: #f8f9fa;
@@ -115,6 +117,11 @@ unset($_SESSION['appointment_time']);
         .home-button:hover {
             background-color: #5f3dc4;
         }
+        .success-animation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
         @media print {
             .action-buttons {
                 display: none;
@@ -131,10 +138,8 @@ unset($_SESSION['appointment_time']);
 <body>
     <div class="container">
         <div class="confirmation-card">
-            <div class="success-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
+            <div class="success-animation">
+                <dotlottie-player src="https://lottie.host/66a77625-724a-4d65-ae1e-4011b2c2aa67/MUBSjtzlHu.lottie" background="transparent" speed="1" style="width: 200px; height: 200px" autoplay></dotlottie-player>
             </div>
             
             <h1 class="text-center text-2xl font-bold mb-2">Appointment Confirmed!</h1>

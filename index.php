@@ -522,7 +522,6 @@ Mon - Sat: 9:00 AM - 1:00 PM
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="#home" class="text-white text-decoration-none opacity-75">Home</a></li>
                         <li class="mb-2"><a href="#services" class="text-white text-decoration-none opacity-75">Services</a></li>
-                        <li class="mb-2"><a href="#about" class="text-white text-decoration-none opacity-75">About Us</a></li>
                         <li class="mb-2"><a href="#contact" class="text-white text-decoration-none opacity-75">Contact</a></li>
                     </ul>
                 </div>
