@@ -366,34 +366,45 @@ $specialties = [
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <link rel="stylesheet" href="css/animations.css"><?php // Include our custom animations ?>
     <style>
         .error-message {
             color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: -0.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+            display: block;
+            clear: both;
         }
         .form-control.is-invalid {
-            border-color: #dc3545;
+            border-color: #dc3545 !important;
+            border-width: 2px !important;
+            background-image: none !important;
         }
         .appointment-summary {
             background-color: #f4e6fa;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid #7047d1;
+            font-size: 1rem;
         }
         .appointment-date {
-            font-weight: 600;
+            font-weight: 700;
             color: #7047d1;
+            font-size: 1.05rem;
         }
         .appointment-time {
-            font-weight: 600;
+            font-weight: 700;
             color: #7047d1;
+            font-size: 1.05rem;
         }
         body {
             margin: 0;
-            padding: 20px;
+            padding: 12px;
             background: #f8f9fa;
+            color: #333;
         }
         .container {
             max-width: 100%;
@@ -409,13 +420,14 @@ $specialties = [
         }
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 6px;
             }
             .card {
-                padding: 1rem;
+                padding: 0.5rem;
             }
             .form-group {
                 margin-bottom: 0.75rem;
+                position: relative;
             }
         }
         .spinner-border-sm {
@@ -432,10 +444,137 @@ $specialties = [
         @keyframes spinner-border {
             to { transform: rotate(360deg); }
         }
+        
+        /* Add styles for success animation container */
+        .success-animation {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            max-width: 300px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Form field containers - REDUCED MARGINS */
+        .form-field-container {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        /* Validation icon positioning - REMOVED */
+        .validation-icon {
+            display: none; /* Hide validation icons */
+        }
+        
+        /* Alternative error indication with border */
+        .form-control.is-invalid {
+            border-color: #dc3545 !important;
+            border-width: 2px !important;
+            background-image: none !important;
+        }
+        
+        /* Ensure error messages appear below inputs - REDUCED HEIGHT */
+        .error-message-container {
+            min-height: 16px;
+            margin-top: 0.125rem;
+        }
+        
+        /* Form grid spacing */
+        .form-grid {
+            display: grid;
+            grid-gap: 0.5rem;
+        }
+        
+        /* Reduce label spacing */
+        label {
+            margin-bottom: 0.125rem !important;
+            display: block;
+            font-size: 0.9375rem;
+            font-weight: 600 !important;
+            color: #4a5568;
+        }
+        
+        /* Form inputs padding */
+        .form-control {
+            padding: 0.375rem 0.625rem !important;
+            height: auto !important;
+            border-radius: 6px !important;
+            border: 1px solid #e2e8f0 !important;
+            transition: border-color 0.15s ease-in-out;
+            font-weight: 500;
+            font-size: 1rem !important;
+        }
+        
+        .form-control:focus {
+            border-color: #7047d1 !important;
+            box-shadow: 0 0 0 3px rgba(112, 71, 209, 0.15) !important;
+            outline: none;
+        }
+        
+        /* Content spacing */
+        .bg-white {
+            padding: 1rem !important;
+            border-radius: 8px !important;
+        }
+        
+        /* Section headers */
+        h2.text-xl {
+            margin-bottom: 0.75rem !important;
+            color: #4a5568;
+            font-size: 1.375rem !important;
+            font-weight: 700 !important;
+        }
+        
+        /* Adjust spacing for DOB selects */
+        .dob-container select {
+            padding: 0.375rem 0.5rem !important;
+        }
+        
+        /* Submit button styling */
+        button[type="submit"] {
+            background-color: #7047d1 !important;
+            transition: all 0.2s ease;
+            font-weight: 600 !important;
+            letter-spacing: 0.025em;
+            font-size: 1.0625rem !important;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #5d3cb5 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(112, 71, 209, 0.1);
+        }
+        
+        /* Form sections */
+        .form-section {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.375rem;
+        }
+        
+        .form-section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+        
+        textarea.form-control {
+            min-height: 70px;
+        }
+        
+        /* Show form message */
+        #formMessage {
+            font-size: 1rem !important;
+            padding: 0.5rem 1rem !important;
+        }
     </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen py-8">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-4">
+<body class="bg-gray-100 flex justify-center items-center min-h-screen py-4">
+    <div class="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg mx-4">
         <?php if ($formSubmitted): ?>
             <!-- Success message -->
             <div class="text-center py-8">
@@ -449,11 +588,21 @@ $specialties = [
         <?php else: ?>
             <!-- Appointment Summary -->
             <div class="appointment-summary">
-                <h3 class="text-lg font-bold mb-2">Appointment Details</h3>
-                <p>Date: <span class="appointment-date"><?php echo htmlspecialchars($formattedDate); ?></span> Time: <span class="appointment-time"><?php echo htmlspecialchars($appointmentTime); ?></span></p>
+                <h3 class="text-lg font-bold mb-1" style="font-size: 1.125rem;">Appointment Details</h3>
+                <p class="font-medium">Date: <span class="appointment-date"><?php echo htmlspecialchars($formattedDate); ?></span></p>
+                <p class="font-medium">Time: <span class="appointment-time"><?php echo htmlspecialchars($appointmentTime); ?></span></p>
             </div>
 
-            <h2 class="text-xl font-bold mb-4 text-center">Patient Information</h2>
+            <h2 class="text-xl font-bold mb-3 text-center">Patient Information</h2>
+            
+            <!-- Success animation container (hidden by default) -->
+            <div id="successAnimation" class="success-animation hidden fade-in">
+                <dotlottie-player src="https://lottie.host/66a77625-724a-4d65-ae1e-4011b2c2aa67/MUBSjtzlHu.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+                <h3 class="text-xl font-bold text-green-600 mt-4">Appointment Booked Successfully!</h3>
+                <p class="text-gray-600 mb-2">Your appointment has been confirmed.</p>
+                <p class="text-gray-500 text-sm">You will be redirected to confirmation page...</p>
+            </div>
+            
             <form id="registrationForm" method="POST" action="process_appointment.php">
                 <!-- Hidden fields to preserve appointment information -->
                 <input type="hidden" name="appointmentDate" value="<?php echo htmlspecialchars($appointmentDate); ?>">
@@ -461,127 +610,158 @@ $specialties = [
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                 <!-- Form message container for showing success/error messages -->
-                <div id="formMessage" class="hidden mb-4 p-4 rounded"></div>
+                <div id="formMessage" class="hidden mb-3 p-2 rounded"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <!-- First Name -->
-                    <div>
-                        <label for="patientFirstName" class="block mb-1 font-medium text-gray-700">First Name *</label>
-                        <input type="text" id="patientFirstName" name="patientFirstName" value="<?php echo htmlspecialchars($patientFirstName); ?>" 
-                            class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['patientFirstName']) ? 'is-invalid border-red-500' : ''; ?>">
-                        <?php if (isset($errors['patientFirstName'])): ?>
-                            <div class="error-message"><?php echo $errors['patientFirstName']; ?></div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <!-- Last Name -->
-                    <div>
-                        <label for="patientLastName" class="block mb-1 font-medium text-gray-700">Last Name *</label>
-                        <input type="text" id="patientLastName" name="patientLastName" value="<?php echo htmlspecialchars($patientLastName); ?>" 
-                            class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['patientLastName']) ? 'is-invalid border-red-500' : ''; ?>">
-                        <?php if (isset($errors['patientLastName'])): ?>
-                            <div class="error-message"><?php echo $errors['patientLastName']; ?></div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <!-- Preferred Name -->
-                    <div>
-                        <label for="patientPreferredName" class="block mb-1 font-medium text-gray-700">Preferred Name (Optional)</label>
-                        <input type="text" id="patientPreferredName" name="patientPreferredName" value="<?php echo htmlspecialchars($patientPreferredName); ?>" 
-                            class="form-control w-full px-4 py-2 border rounded-lg">
-                    </div>
-                    
-                    <!-- Date of Birth -->
-                    <div>
-                        <label class="block mb-1 font-medium text-gray-700">Date of Birth *</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <select name="dobMonth" class="form-control px-2 py-2 border rounded-lg <?php echo isset($errors['dob']) ? 'is-invalid border-red-500' : ''; ?>">
-                                <option value="">Month</option>
-                                <?php foreach ($months as $num => $name): ?>
-                                    <option value="<?php echo $num; ?>" <?php echo $dobMonth == $num ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            
-                            <select name="dobDay" class="form-control px-2 py-2 border rounded-lg <?php echo isset($errors['dob']) ? 'is-invalid border-red-500' : ''; ?>">
-                                <option value="">Day</option>
-                                <?php for ($i = 1; $i <= 31; $i++): ?>
-                                    <option value="<?php echo $i; ?>" <?php echo $dobDay == $i ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                <?php endfor; ?>
-                            </select>
-                            
-                            <select name="dobYear" class="form-control px-2 py-2 border rounded-lg <?php echo isset($errors['dob']) ? 'is-invalid border-red-500' : ''; ?>">
-                                <option value="">Year</option>
-                                <?php 
-                                $currentYear = date('Y');
-                                for ($i = $currentYear; $i >= $currentYear - 100; $i--): 
-                                ?>
-                                    <option value="<?php echo $i; ?>" <?php echo $dobYear == $i ? 'selected' : ''; ?>><?php echo $i; ?></option>
-                                <?php endfor; ?>
-                            </select>
+                <div class="form-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2 form-grid">
+                        <!-- First Name -->
+                        <div class="form-field-container">
+                            <label for="patientFirstName" class="block mb-1 font-semibold text-gray-700">First Name *</label>
+                            <div class="relative">
+                                <input type="text" id="patientFirstName" name="patientFirstName" value="<?php echo htmlspecialchars($patientFirstName); ?>" 
+                                    class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['patientFirstName']) ? 'is-invalid border-red-500' : ''; ?>"
+                                    placeholder="Enter first name">
+                            </div>
+                            <div class="error-message-container">
+                                <?php if (isset($errors['patientFirstName'])): ?>
+                                    <div class="error-message"><?php echo $errors['patientFirstName']; ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <?php if (isset($errors['dob'])): ?>
-                            <div class="error-message"><?php echo $errors['dob']; ?></div>
-                        <?php endif; ?>
+                        
+                        <!-- Last Name -->
+                        <div class="form-field-container">
+                            <label for="patientLastName" class="block mb-1 font-semibold text-gray-700">Last Name *</label>
+                            <div class="relative">
+                                <input type="text" id="patientLastName" name="patientLastName" value="<?php echo htmlspecialchars($patientLastName); ?>" 
+                                    class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['patientLastName']) ? 'is-invalid border-red-500' : ''; ?>"
+                                    placeholder="Enter last name">
+                            </div>
+                            <div class="error-message-container">
+                                <?php if (isset($errors['patientLastName'])): ?>
+                                    <div class="error-message"><?php echo $errors['patientLastName']; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        
+                        <!-- Preferred Name -->
+                        <div class="form-field-container">
+                            <label for="patientPreferredName" class="block mb-1 font-semibold text-gray-700">Preferred Name (Optional)</label>
+                            <input type="text" id="patientPreferredName" name="patientPreferredName" value="<?php echo htmlspecialchars($patientPreferredName); ?>" 
+                                class="form-control w-full px-4 py-2 border rounded-lg"
+                                placeholder="Nickname (optional)">
+                        </div>
+                        
+                        <!-- Date of Birth -->
+                        <div class="form-field-container">
+                            <label class="block mb-1 font-semibold text-gray-700">Date of Birth *</label>
+                            <div class="grid grid-cols-3 gap-1 dob-container">
+                                <select name="dobMonth" class="form-control px-2 py-2 border rounded-lg <?php echo isset($errors['dob']) ? 'is-invalid border-red-500' : ''; ?>">
+                                    <option value="">Month</option>
+                                    <?php foreach ($months as $num => $name): ?>
+                                        <option value="<?php echo $num; ?>" <?php echo $dobMonth == $num ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                
+                                <select name="dobDay" class="form-control px-2 py-2 border rounded-lg <?php echo isset($errors['dob']) ? 'is-invalid border-red-500' : ''; ?>">
+                                    <option value="">Day</option>
+                                    <?php for ($i = 1; $i <= 31; $i++): ?>
+                                        <option value="<?php echo $i; ?>" <?php echo $dobDay == $i ? 'selected' : ''; ?>><?php echo $i; ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                                
+                                <select name="dobYear" class="form-control px-2 py-2 border rounded-lg <?php echo isset($errors['dob']) ? 'is-invalid border-red-500' : ''; ?>">
+                                    <option value="">Year</option>
+                                    <?php 
+                                    $currentYear = date('Y');
+                                    for ($i = $currentYear; $i >= $currentYear - 100; $i--): 
+                                    ?>
+                                        <option value="<?php echo $i; ?>" <?php echo $dobYear == $i ? 'selected' : ''; ?>><?php echo $i; ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                            <div class="error-message-container">
+                                <?php if (isset($errors['dob'])): ?>
+                                    <div class="error-message"><?php echo $errors['dob']; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <!-- Contact Number -->
-                    <div>
-                        <label for="contactNumber" class="block mb-1 font-medium text-gray-700">Contact Number *</label>
-                        <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo htmlspecialchars($contactNumber); ?>" 
-                            class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['contactNumber']) ? 'is-invalid border-red-500' : ''; ?>" 
-                            placeholder="Contact number">
-                        <?php if (isset($errors['contactNumber'])): ?>
-                            <div class="error-message"><?php echo $errors['contactNumber']; ?></div>
-                        <?php endif; ?>
+                <div class="form-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2 form-grid">
+                        <!-- Contact Number -->
+                        <div class="form-field-container">
+                            <label for="contactNumber" class="block mb-1 font-semibold text-gray-700">Contact Number *</label>
+                            <div class="relative">
+                                <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo htmlspecialchars($contactNumber); ?>" 
+                                    class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['contactNumber']) ? 'is-invalid border-red-500' : ''; ?>" 
+                                    placeholder="Phone number">
+                            </div>
+                            <div class="error-message-container">
+                                <?php if (isset($errors['contactNumber'])): ?>
+                                    <div class="error-message"><?php echo $errors['contactNumber']; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="form-field-container">
+                            <label for="email" class="block mb-1 font-semibold text-gray-700">Email *</label>
+                            <div class="relative">
+                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" 
+                                    class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['email']) ? 'is-invalid border-red-500' : ''; ?>" 
+                                    placeholder="your@email.com">
+                            </div>
+                            <div class="error-message-container">
+                                <?php if (isset($errors['email'])): ?>
+                                    <div class="error-message"><?php echo $errors['email']; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <!-- Preferred Specialty -->
+                    <div class="form-field-container mb-2">
+                        <label for="preferredSpecialty" class="block mb-1 font-semibold text-gray-700">Preferred Specialty</label>
+                        <select id="preferredSpecialty" name="preferredSpecialty" class="form-control w-full px-4 py-2 border rounded-lg">
+                            <option value="">Select a specialty (optional)</option>
+                            <?php foreach ($specialties as $specialty): ?>
+                                <option value="<?php echo htmlspecialchars($specialty); ?>" <?php echo $preferredSpecialty == $specialty ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($specialty); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     
-                    <!-- Email -->
-                    <div>
-                        <label for="email" class="block mb-1 font-medium text-gray-700">Email *</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" 
-                            class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['email']) ? 'is-invalid border-red-500' : ''; ?>" 
-                            placeholder="your@email.com">
-                        <?php if (isset($errors['email'])): ?>
-                            <div class="error-message"><?php echo $errors['email']; ?></div>
-                        <?php endif; ?>
+                    <!-- Reason for Appointment -->
+                    <div class="form-field-container mb-3">
+                        <label for="reasonForAppointment" class="block mb-1 font-semibold text-gray-700">Reason for Appointment *</label>
+                        <div class="relative">
+                            <textarea id="reasonForAppointment" name="reasonForAppointment" rows="3" 
+                                class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['reasonForAppointment']) ? 'is-invalid border-red-500' : ''; ?>" 
+                                placeholder="Describe your symptoms or reason for visit"><?php echo htmlspecialchars($reasonForAppointment); ?></textarea>
+                        </div>
+                        <div class="error-message-container">
+                            <?php if (isset($errors['reasonForAppointment'])): ?>
+                                <div class="error-message"><?php echo $errors['reasonForAppointment']; ?></div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Preferred Specialty -->
-                <div class="mb-4">
-                    <label for="preferredSpecialty" class="block mb-1 font-medium text-gray-700">Preferred Specialty</label>
-                    <select id="preferredSpecialty" name="preferredSpecialty" class="form-control w-full px-4 py-2 border rounded-lg">
-                        <option value="">Select a specialty (optional)</option>
-                        <?php foreach ($specialties as $specialty): ?>
-                            <option value="<?php echo htmlspecialchars($specialty); ?>" <?php echo $preferredSpecialty == $specialty ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($specialty); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <!-- Reason for Appointment -->
-                <div class="mb-6">
-                    <label for="reasonForAppointment" class="block mb-1 font-medium text-gray-700">Reason for Appointment *</label>
-                    <textarea id="reasonForAppointment" name="reasonForAppointment" rows="4" 
-                        class="form-control w-full px-4 py-2 border rounded-lg <?php echo isset($errors['reasonForAppointment']) ? 'is-invalid border-red-500' : ''; ?>" 
-                        placeholder="Please briefly describe your symptoms or reason for visit"><?php echo htmlspecialchars($reasonForAppointment); ?></textarea>
-                    <?php if (isset($errors['reasonForAppointment'])): ?>
-                        <div class="error-message"><?php echo $errors['reasonForAppointment']; ?></div>
-                    <?php endif; ?>
                 </div>
                 
                 <!-- General error message for appointment slot -->
                 <?php if (isset($errors['appointmentSlot'])): ?>
-                    <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <div class="mb-3 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
                         <?php echo $errors['appointmentSlot']; ?>
                     </div>
                 <?php endif; ?>
                 
                 <!-- Submit Button with loading state support -->
-                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-medium transition">
+                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold transition">
                     Submit Appointment Request
                 </button>
             </form>
@@ -638,13 +818,17 @@ $specialties = [
                     })
                     .then(data => {
                         if (data.success) {
+                            // Hide form and show success animation
+                            document.getElementById('registrationForm').style.display = 'none';
+                            document.getElementById('successAnimation').classList.remove('hidden');
+                            
                             // Show success message
                             showFormMessage('success', 'Appointment booked successfully! Redirecting to confirmation page...');
                             
-                            // Redirect to confirmation page after a short delay
+                            // Redirect to confirmation page after a short delay (longer to see animation)
                             setTimeout(() => {
                                 window.location.href = 'confirmation.php';
-                            }, 1500);
+                            }, 3000);
                         } else {
                             // Show error message
                             let errorMsg = data.message || 'An error occurred. Please try again.';
@@ -712,11 +896,11 @@ $specialties = [
             formMessage.classList.remove('hidden');
             
             if (type === 'success') {
-                formMessage.className = 'mb-4 p-4 rounded bg-green-100 text-green-700 border border-green-300';
+                formMessage.className = 'mb-3 p-2 rounded bg-green-100 text-green-700 border border-green-300';
             } else if (type === 'error') {
-                formMessage.className = 'mb-4 p-4 rounded bg-red-100 text-red-700 border border-red-300';
+                formMessage.className = 'mb-3 p-2 rounded bg-red-100 text-red-700 border border-red-300';
             } else {
-                formMessage.className = 'mb-4 p-4 rounded bg-blue-100 text-blue-700 border border-blue-300';
+                formMessage.className = 'mb-3 p-2 rounded bg-blue-100 text-blue-700 border border-blue-300';
             }
             
             // Scroll to message
@@ -766,7 +950,13 @@ $specialties = [
             
             // Scroll to first error
             if (firstErrorField) {
-                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Scroll to the containing form-field-container, not just the input
+                const container = firstErrorField.closest('.form-field-container');
+                if (container) {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 firstErrorField.focus();
             }
             
@@ -811,48 +1001,75 @@ $specialties = [
         function showError(field, message, isDOB = false) {
             field.classList.add('is-invalid', 'border-red-500');
             
-            // Create error message element if it doesn't exist
-            const errorId = `${field.id || field.name}-error`;
-            let errorElement = document.getElementById(errorId);
+            // Find the parent container
+            let container = field.closest('.form-field-container');
+            if (!container) {
+                container = field.parentNode;
+            }
             
+            // We no longer add validation icons
+            
+            // Find or create error message container
+            let errorContainer = container.querySelector('.error-message-container');
+            if (!errorContainer) {
+                errorContainer = document.createElement('div');
+                errorContainer.className = 'error-message-container';
+                container.appendChild(errorContainer);
+            }
+            
+            // Create or update error message
+            let errorElement = errorContainer.querySelector('.error-message');
             if (!errorElement) {
                 errorElement = document.createElement('div');
-                errorElement.id = errorId;
                 errorElement.className = 'error-message';
-                
-                if (isDOB) {
-                    // For DOB, insert after the grid container
-                    const dobContainer = field.closest('div').nextElementSibling;
-                    if (dobContainer) {
-                        field.closest('div').parentNode.insertBefore(errorElement, dobContainer);
-                    }
-                } else {
-                    // For other fields, insert after the field
-                    field.parentNode.insertBefore(errorElement, field.nextSibling);
-                }
+                errorContainer.appendChild(errorElement);
             }
             
             errorElement.textContent = message;
             errorElement.style.display = 'block';
+            
+            // Add shake animation to highlight the error
+            container.classList.add('shake');
+            setTimeout(() => container.classList.remove('shake'), 500);
         }
         
         function clearError(field) {
             field.classList.remove('is-invalid', 'border-red-500');
             
-            const errorId = `${field.id || field.name}-error`;
-            const errorElement = document.getElementById(errorId);
-            if (errorElement) {
-                errorElement.style.display = 'none';
+            // Find the parent container
+            let container = field.closest('.form-field-container');
+            if (!container) {
+                container = field.parentNode;
+            }
+            
+            // We no longer need to remove validation icons
+            
+            // Clear error message
+            const errorContainer = container.querySelector('.error-message-container');
+            if (errorContainer) {
+                const errorElement = errorContainer.querySelector('.error-message');
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
             }
         }
         
         function clearAllErrors() {
+            // Remove is-invalid class from all fields
             document.querySelectorAll('.is-invalid').forEach(field => {
                 field.classList.remove('is-invalid', 'border-red-500');
             });
             
+            // We no longer need to remove validation icons since they're not added
+            
+            // Hide all error messages
             document.querySelectorAll('.error-message').forEach(element => {
                 element.style.display = 'none';
+            });
+            
+            // Remove shake animation
+            document.querySelectorAll('.shake').forEach(element => {
+                element.classList.remove('shake');
             });
         }
         
@@ -879,7 +1096,23 @@ $specialties = [
                     
                     // Only validate if all fields have values
                     if (month && day && year) {
-                        validateDOB(month, day, year);
+                        const isValid = validateDOB(month, day, year);
+                        
+                        // Update all DOB fields
+                        const fields = [
+                            document.querySelector('select[name="dobMonth"]'),
+                            document.querySelector('select[name="dobDay"]'),
+                            document.querySelector('select[name="dobYear"]')
+                        ];
+                        
+                        if (isValid) {
+                            // Clear errors if valid
+                            fields.forEach(field => clearError(field));
+                        } else {
+                            // Show error if invalid
+                            fields.forEach(field => field.classList.add('is-invalid', 'border-red-500'));
+                            showError(fields[0], 'Please enter a valid date of birth', true);
+                        }
                     }
                 });
             });
@@ -920,28 +1153,6 @@ $specialties = [
             return true;
         }
     </script>
-
-    <style>
-    /* ... keep existing styles ... */
-    
-    /* Additional styles for the form message */
-    #formMessage {
-        transition: all 0.3s ease;
-    }
-    
-    /* Improve spinner visibility */
-    .spinner-border-sm {
-        display: inline-block;
-        width: 1rem;
-        height: 1rem;
-        border: 0.2em solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: spinner-border .75s linear infinite;
-        margin-right: 0.5rem;
-        vertical-align: text-bottom;
-    }
-    </style>
 </body>
 </html>
 

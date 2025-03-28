@@ -1,0 +1,126 @@
+/**
+ * Animations and effects for hospital appointment system
+ */
+
+/* Success animation container */
+.success-animation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 300px;
+}
+
+/* Spinner animation for loading states */
+.spinner-border-sm {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 0.2em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+    margin-right: 0.5rem;
+    vertical-align: text-bottom;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
+
+/* Form message transitions */
+.form-message {
+    transition: all 0.3s ease;
+}
+
+/* Success checkmark animation */
+.checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background-color: #d1fae5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkmark svg {
+    width: 40px;
+    height: 40px;
+    color: #10b981;
+}
+
+/* Fade animations */
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Button hover effects */
+.btn-hover-effect {
+    transition: all 0.2s ease;
+}
+
+.btn-hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide/show utilities */
+.hidden {
+    display: none;
+}
+
+/* Error shake animation */
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+/* Error message styling */
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem;
+    display: block;
+    clear: both;
+    position: relative;
+    padding-left: 0.25rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* Input field with error */
+.is-invalid {
+    border-color: #dc3545 !important;
+    background-position: right calc(0.375em + 0.1875rem) center !important;
+    padding-right: calc(1.5em + 0.75rem) !important;
+}
+
+/* Error text with icon */
+.error-message::before {
+    content: "⚠️";
+    font-size: 0.8rem;
+    margin-right: 0.25rem;
+    display: inline-block;
+}
+
+/* Form group styling to prevent message overlap */
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+} 
