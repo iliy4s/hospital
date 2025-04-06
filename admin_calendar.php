@@ -216,6 +216,10 @@ try {
     <title>Admin Calendar - Dr. Kiran Neuro Centre</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
       * {
         margin: 0;
@@ -752,30 +756,88 @@ try {
           font-size: 1.2rem;
         }
       }
+
+      .fc-daygrid-day.fc-day-today {
+        background-color: rgba(65, 105, 225, 0.1) !important;
+      }
+
+      .fc-daygrid-day.active.selected {
+        background-color: rgba(65, 105, 225, 0.2) !important;
+      }
+
+      .fc-event {
+        cursor: pointer;
+        padding: 2px 5px;
+        margin: 2px 0;
+        border-radius: 3px;
+      }
+
+      .appointment-blue { 
+        background-color: rgba(65, 105, 225, 0.2) !important; 
+        border-color: #4169e1 !important;
+        color: #4169e1 !important;
+      }
+      .appointment-red { 
+        background-color: rgba(244, 67, 54, 0.2) !important; 
+        border-color: #F44336 !important;
+        color: #F44336 !important;
+      }
+      .appointment-green { 
+        background-color: rgba(76, 175, 80, 0.2) !important; 
+        border-color: #4CAF50 !important;
+        color: #4CAF50 !important;
+      }
+      .appointment-purple { 
+        background-color: rgba(156, 39, 176, 0.2) !important; 
+        border-color: #9c27b0 !important;
+        color: #9c27b0 !important;
+      }
+      .appointment-yellow { 
+        background-color: rgba(255, 235, 59, 0.2) !important; 
+        border-color: #FFEB3B !important;
+        color: #806600 !important;
+      }
+
+      .fc .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .fc .fc-toolbar-title {
+        font-size: 1.2em;
+      }
+
+      @media (max-width: 768px) {
+        .fc .fc-toolbar {
+          justify-content: center;
+        }
+      }
     </style>
 </head>
 <body>
   <div class="container">
     <header class="header">
       <h1 class="title">Appointment</h1>
-      <button class="check-request-btn">
+      <!-- <button class="check-request-btn">
         <span>+</span>
         Check request
-      </button>
+      </button> -->
     </header>
-    
+<!--     
     <div class="toolbar">
       <div class="toolbar-right">
         <button class="continue-patient-btn" onclick="openRegistrationModal()">
           <i class="fas fa-user-plus"></i> Continue Patient
         </button>
       </div>
-    </div>
+    </div> -->
     
     <div class="calendar-container">
       <div class="sidebar">
         <div class="sidebar-header">
-          <div class="sidebar-title">Appointment Calendar</div>
+          <div class="sidebar-title">
+            <?php echo $monthName . ' ' . $year; ?>
+          </div>
           <div class="nav-arrows">
             <a href="?month=<?php echo $month-1; ?>&year=<?php echo $year; ?>&date=<?php echo $selectedDate; ?>" class="nav-btn nav-prev">&lt;</a>
             <a href="?month=<?php echo $month+1; ?>&year=<?php echo $year; ?>&date=<?php echo $selectedDate; ?>" class="nav-btn">&gt;</a>
@@ -824,9 +886,14 @@ try {
                 $hasAppointments = isset($appointments[$currentDate]) && count($appointments[$currentDate]) > 0;
                 
                 $classes = 'day';
-                if ($isToday) $classes .= ' active';
-                if ($isSelected) $classes .= ' selected';
-                if ($hasAppointments) $classes .= ' has-appointments';
+                // Only add active and selected classes if this date is selected
+                // OR if it's today and no date has been selected yet
+                if ($isSelected || ($isToday && !isset($_GET['date']))) {
+                  $classes .= ' active selected';
+                }
+                if ($hasAppointments) {
+                  $classes .= ' has-appointments';
+                }
                 
                 echo '<div class="' . $classes . '" data-date="' . $currentDate . '">' . $day . '</div>';
               }
@@ -885,200 +952,18 @@ try {
         </div> -->
         
         <div class="calendar-grid-main">
-          <?php
-          if (isset($_GET['date'])) {
-            // Single day view - show detailed appointments for selected date
-            echo '<div class="calendar-day" style="grid-column: span 7; display: flex; flex-direction: column;">';
-            echo '<div class="calendar-day-header" style="text-align: left; padding-left: 20px;">';
-            echo date('l, F j, Y', strtotime($selectedDate));
-            echo '</div>';
-            
-            echo '<div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 20px;">';
-            
-            // Check if there are any appointments for this date
-            if (isset($appointments[$selectedDate]) && count($appointments[$selectedDate]) > 0) {
-              // Sort appointments by time
-              usort($appointments[$selectedDate], function($a, $b) {
-                return strcmp($a['appointment_time'], $b['appointment_time']);
-              });
-              
-              // Display each appointment
-              foreach ($appointments[$selectedDate] as $appointment) {
-                // Determine color class based on specialty
-                $colorClass = 'appointment-blue';
-                $specialty = strtolower($appointment['preferred_specialty'] ?? '');
-                
-                if (strpos($specialty, 'cardiology') !== false) {
-                  $colorClass = 'appointment-red';
-                } elseif (strpos($specialty, 'pediatrics') !== false) {
-                  $colorClass = 'appointment-green';
-                } elseif (strpos($specialty, 'neurology') !== false) {
-                  $colorClass = 'appointment-purple';
-                } elseif (strpos($specialty, 'dental') !== false) {
-                  $colorClass = 'appointment-yellow';
-                }
-                
-                echo '<div class="' . $colorClass . '" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; cursor: pointer;"
-                          data-bs-toggle="modal" 
-                          data-bs-target="#appointmentModal"
-                          data-patient="' . htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']) . '"
-                          data-time="' . htmlspecialchars($appointment['appointment_time']) . '"
-                          data-date="' . $selectedDate . '"
-                          data-specialty="' . htmlspecialchars($appointment['preferred_specialty']) . '"
-                          data-contact="' . htmlspecialchars($appointment['contact_number']) . '"
-                          data-reason="' . htmlspecialchars($appointment['reason_for_appointment']) . '">';
-                
-                echo '<div style="display: flex; align-items: center; gap: 15px;">';
-                echo '<div style="min-width: 60px; font-weight: 500;">' . $appointment['appointment_time'] . '</div>';
-                echo '<div>' . htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']) . '</div>';
-                echo '</div>';
-                
-                echo '<div style="display: flex; align-items: center; gap: 15px;">';
-                echo '<div>' . htmlspecialchars($appointment['preferred_specialty']) . '</div>';
-                echo '<div>' . htmlspecialchars($appointment['contact_number']) . '</div>';
-                echo '</div>';
-                
-                echo '</div>';
-              }
-            } else {
-              echo '<div style="text-align: center; padding: 30px; color: #6c757d;">No appointments scheduled for this date</div>';
-            }
-            
-            echo '</div>';
-            echo '</div>';
-            
-          } else {
-            // Week view - display the standard calendar grid
-            // First row: Time column and days of week
-            echo '<div class="calendar-day" style="width: 80px;"><div class="calendar-day-header">GMT+8</div></div>';
-            
-            // Get the current week
-            $startOfWeek = date('Y-m-d', strtotime('this week monday'));
-            
-            // Create the day columns headers (excluding Sunday)
-            for ($i = 0; $i < 6; $i++) {
-              $currentDate = date('Y-m-d', strtotime($startOfWeek . " +$i days"));
-              $dayName = date('D', strtotime($currentDate));
-              $dayNum = date('j', strtotime($currentDate));
-              $isToday = date('Y-m-d') === $currentDate;
-              
-              echo '<div class="calendar-day">';
-              echo '<div class="calendar-day-header">';
-              if ($isToday) {
-                echo $dayName . ' <span class="today-indicator">' . $dayNum . '</span>';
-              } else {
-                echo $dayName . ' <span class="day-number">' . $dayNum . '</span>';
-              }
-              echo '</div>';
-              echo '</div>';
-            }
-            
-            // Time slots and appointments
-            $timeSlots = [
-              '09:00' => '09 AM', 
-              '10:00' => '10 AM', 
-              '11:00' => '11 AM', 
-              '12:00' => '12 PM',
-              '13:00' => '01 PM',
-              '14:00' => '02 PM',
-              '15:00' => '03 PM',
-              '16:00' => '04 PM',
-              '17:00' => '05 PM'
-            ];
-            
-            foreach ($timeSlots as $timeValue => $timeDisplay) {
-              // Time label
-              echo '<div class="calendar-day" style="width: 80px;">';
-              echo '<div class="time-slot">' . $timeDisplay . '</div>';
-              echo '</div>';
-              
-              // Day cells for this time
-              for ($i = 0; $i < 6; $i++) {
-                $currentDate = date('Y-m-d', strtotime($startOfWeek . " +$i days"));
-                echo '<div class="calendar-day">';
-                
-                // Check for appointments in this time slot
-                $appointmentsInSlot = [];
-                if (isset($appointments[$currentDate])) {
-                  foreach ($appointments[$currentDate] as $appointment) {
-                    $appointmentHour = substr($appointment['appointment_time'], 0, 2);
-                    $slotHour = substr($timeValue, 0, 2);
-                    
-                    if ($appointmentHour == $slotHour) {
-                      $appointmentsInSlot[] = $appointment;
-                    }
-                  }
-                }
-                
-                // Display appointments
-                foreach ($appointmentsInSlot as $index => $appointment) {
-                  // Only show max 2 appointments per slot
-                  if ($index >= 2) {
-                    echo '<div class="small text-center mt-1">+' . (count($appointmentsInSlot) - 2) . ' more</div>';
-                    break;
-                  }
-                  
-                  // Determine color class
-                  $colorClass = 'appointment-blue';
-                  $specialty = strtolower($appointment['preferred_specialty'] ?? '');
-                  
-                  if (strpos($specialty, 'cardiology') !== false) {
-                    $colorClass = 'appointment-red';
-                  } elseif (strpos($specialty, 'pediatrics') !== false) {
-                    $colorClass = 'appointment-green';
-                  } elseif (strpos($specialty, 'neurology') !== false) {
-                    $colorClass = 'appointment-purple';
-                  } elseif (strpos($specialty, 'dental') !== false) {
-                    $colorClass = 'appointment-yellow';
-                  }
-                  
-                  // Create appointment box
-                  $top = ((int)substr($appointment['appointment_time'], 3, 2)) * 60 / 60;
-                  
-                  echo '<div class="' . $colorClass . '" 
-                             style="position: relative; margin: 2px 0; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 11px;"
-                             data-bs-toggle="modal" 
-                             data-bs-target="#appointmentModal"
-                             data-patient="' . htmlspecialchars($appointment['patient_first_name'] . ' ' . $appointment['patient_last_name']) . '"
-                             data-time="' . htmlspecialchars($appointment['appointment_time']) . '"
-                             data-date="' . $currentDate . '"
-                             data-specialty="' . htmlspecialchars($appointment['preferred_specialty']) . '"
-                             data-contact="' . htmlspecialchars($appointment['contact_number']) . '"
-                             data-reason="' . htmlspecialchars($appointment['reason_for_appointment']) . '">';
-                  
-                  // Compute patient name (shortened if needed)
-                  $patientName = $appointment['patient_first_name'] . ' ' . $appointment['patient_last_name'];
-                  if (strlen($patientName) > 12) {
-                    $patientName = substr($patientName, 0, 10) . '...';
-                  }
-                  
-                  echo '<div style="font-weight: 500;">' . htmlspecialchars($patientName) . '</div>';
-                  echo '<div style="font-size: 10px;">' . $appointment['appointment_time'] . '</div>';
-                  
-                  echo '</div>';
-                }
-                
-                echo '</div>';
-              }
-            }
-          }
-          ?>
+            <section class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div id="calendar"></div>
         </div>
+          </div>
+          </div>
+            </section>
+          </div>
         
-        <div class="legend">
-          <div class="legend-item">
-            <div class="legend-color legend-blue"></div>
-            <span>None</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color legend-red"></div>
-            <span>Priority</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color legend-yellow"></div>
-            <span>Deadline</span>
-          </div>
-        </div>
+      
       </div>
     </div>
   </div>
@@ -1271,6 +1156,14 @@ try {
       const days = document.querySelectorAll('.day');
       days.forEach(day => {
         day.addEventListener('click', function() {
+          // Remove active and selected classes from all days
+          days.forEach(d => {
+            d.classList.remove('active', 'selected');
+          });
+          
+          // Add active and selected classes only to clicked day
+          this.classList.add('active', 'selected');
+          
           const date = this.getAttribute('data-date');
           if (date) {
             window.location.href = 'admin_calendar.php?date=' + date + '&month=<?php echo $month; ?>&year=<?php echo $year; ?>';
@@ -1353,6 +1246,113 @@ try {
             console.error('Error:', error);
             alert('An error occurred. Please try again.');
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get appointments data from PHP
+        let appointments = <?php echo json_encode($appointments ?? []); ?>;
+        
+        // Format appointments for FullCalendar
+        let events = [];
+        if (appointments) {
+            for (const date in appointments) {
+                appointments[date].forEach(appointment => {
+                    events.push({
+                        title: `${appointment.patient_first_name} ${appointment.patient_last_name}`,
+                        start: `${date}T${appointment.appointment_time}`,
+                        extendedProps: {
+                            specialty: appointment.preferred_specialty,
+                            contact: appointment.contact_number,
+                            reason: appointment.reason_for_appointment
+                        },
+                        className: getAppointmentClass(appointment.preferred_specialty)
+                    });
+                });
+            }
+        }
+
+        // Initialize FullCalendar
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            initialDate: '<?php echo $selectedDate ?? date('Y-m-d'); ?>',
+            selectable: true,
+            selectMirror: true,
+            dayMaxEvents: true,
+            events: events,
+            height: 'auto',
+            firstDay: 1, // Start week on Monday
+            dateClick: function(info) {
+                const clickedDate = info.dateStr;
+                window.location.href = `admin_calendar.php?date=${clickedDate}&month=<?php echo $month; ?>&year=<?php echo $year; ?>`;
+            },
+            eventClick: function(info) {
+                const event = info.event;
+                const modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+                
+                // Update modal content
+                document.getElementById('appointmentDate').textContent = formatDate(event.start);
+                document.getElementById('appointmentTime').textContent = formatTime(event.start);
+                document.getElementById('patientName').textContent = event.title;
+                document.getElementById('contactNumber').textContent = event.extendedProps.contact;
+                document.getElementById('preferredSpecialty').textContent = event.extendedProps.specialty;
+                document.getElementById('reason').textContent = event.extendedProps.reason;
+                
+                modal.show();
+            },
+            datesSet: function(info) {
+                // Update the current view's dates
+                const currentDate = info.view.currentStart;
+                const month = currentDate.getMonth() + 1;
+                const year = currentDate.getFullYear();
+                
+                // Only update URL if month/year changed
+                if (month != <?php echo $month; ?> || year != <?php echo $year; ?>) {
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('month', month);
+                    currentUrl.searchParams.set('year', year);
+                    window.history.pushState({}, '', currentUrl);
+                }
+            }
+        });
+        
+        calendar.render();
+        
+        // Helper function to determine appointment class based on specialty
+        function getAppointmentClass(specialty) {
+            if (!specialty) return 'appointment-blue';
+            
+            specialty = specialty.toLowerCase();
+            if (specialty.includes('cardiology')) return 'appointment-red';
+            if (specialty.includes('pediatrics')) return 'appointment-green';
+            if (specialty.includes('neurology')) return 'appointment-purple';
+            if (specialty.includes('dental')) return 'appointment-yellow';
+            return 'appointment-blue';
+        }
+        
+        // Helper function to format date
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Helper function to format time
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
     });
   </script>
 </body>

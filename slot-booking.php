@@ -14,14 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Standardize time format to prevent inconsistencies
         $selectedTime = standardizeTimeFormat($selectedTime);
         
-        // Check if the selected time is 11:00 AM (which should be disabled)
-        if (preg_match('/^11:00\s*AM$/i', $selectedTime)) {
-            $_SESSION['booking_error'] = "Sorry, appointments at 11:00 AM are not available. Please select another time.";
-            error_log("Booking attempt for disabled 11:00 AM slot: Date: $selectedDate");
-            header("Location: slot-booking.php");
-            exit;
-        }
-        
         // Check if the selected date and time are in the past
         $selectedDateTime = new DateTime($selectedDate . ' ' . $selectedTime);
         $currentDateTime = new DateTime();
@@ -664,6 +656,7 @@ h2 {
         <div class="calendar">
           <div class="month-year" id="month-year-display">March 2025</div>
           <div class="weekdays">
+            <div class="weekday">Sun</div>
             <div class="weekday">Mon</div>
             <div class="weekday">Tue</div>
             <div class="weekday">Wed</div>
@@ -718,10 +711,9 @@ h2 {
     const bookedSlots = <?php echo json_encode($bookedSlots); ?>;
     console.log("Booked slots:", bookedSlots); // Debug
     
-    // Adjust to the start of the week (Monday)
+    // Adjust to the start of the week (Sunday)
     const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // If Sunday, go back 6 days, otherwise adjust to Monday
-    currentWeekStart.setDate(today.getDate() + diff);
+    currentWeekStart.setDate(today.getDate() - dayOfWeek); // Start from Sunday
     
     // Format options for displaying dates
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -810,7 +802,8 @@ h2 {
       // Track if we've found a selectable date yet
       let foundSelectableDate = false;
       
-      for (let i = 0; i < 6; i++) { // Showing 6 days Mon-Sat
+      // Generate dates starting from Sunday
+      for (let i = 0; i < 7; i++) {
         const date = new Date(currentWeekStart);
         date.setDate(currentWeekStart.getDate() + i);
         
@@ -819,10 +812,11 @@ h2 {
         const isToday = isSameDate(date, today);
         const isPast = date < today && !isToday;
         const isSelectedDate = isSameDate(date, selectedDate);
+        const isSunday = date.getDay() === 0;
         
         // Create date element
         const dateElement = document.createElement('div');
-        dateElement.className = `date${isSelectedDate ? ' selected' : ''}${isPast ? ' disabled' : ''}`;
+        dateElement.className = `date${isSelectedDate ? ' selected' : ''}${(isPast || isSunday) ? ' disabled' : ''}`;
         
         // Store date information as data attributes
         dateElement.dataset.date = date.getDate();
@@ -830,29 +824,34 @@ h2 {
         dateElement.dataset.year = date.getFullYear();
         dateElement.dataset.fulldate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
         
-        if (!isPast) {
-          dateElement.onclick = function() { 
-            selectDate(this); 
-            const selectedDateObj = new Date(
-              parseInt(this.dataset.year),
-              parseInt(this.dataset.month),
-              parseInt(this.dataset.date)
-            );
-            selectedDate = selectedDateObj;
+        // Add title for Sundays
+        if (isSunday) {
+            dateElement.title = "Closed on Sundays";
+        }
+        
+        if (!isPast && !isSunday) {
+            dateElement.onclick = function() { 
+                selectDate(this); 
+                const selectedDateObj = new Date(
+                    parseInt(this.dataset.year),
+                    parseInt(this.dataset.month),
+                    parseInt(this.dataset.date)
+                );
+                selectedDate = selectedDateObj;
+                
+                // If a time period is already selected, regenerate time slots
+                if (selectedTimePeriod) {
+                    generateTimeSlots();
+                }
+            };
             
-            // If a time period is already selected, regenerate time slots
-            if (selectedTimePeriod) {
-              generateTimeSlots();
+            // If this is the first selectable date and no date is currently selected
+            if (!foundSelectableDate && (!isSelectedDate || isPast)) {
+                foundSelectableDate = true;
+                if (!isToday) { // Only auto-select if it's not already today
+                    selectedDate = new Date(date);
+                }
             }
-          };
-          
-          // If this is the first selectable date and no date is currently selected
-          if (!foundSelectableDate && (!isSelectedDate || isPast)) {
-            foundSelectableDate = true;
-            if (!isToday) { // Only auto-select if it's not already today
-              selectedDate = new Date(date);
-            }
-          }
         }
         
         // Date number
@@ -867,9 +866,21 @@ h2 {
         
         // Today indicator
         if (isToday) {
-          const todayIndicator = document.createElement('div');
-          todayIndicator.className = 'today-indicator';
-          dateElement.appendChild(todayIndicator);
+            const todayIndicator = document.createElement('div');
+            todayIndicator.className = 'today-indicator';
+            dateElement.appendChild(todayIndicator);
+        }
+        
+        // Add holiday indicator for Sundays
+        if (isSunday) {
+            const holidayIndicator = document.createElement('div');
+            holidayIndicator.className = 'holiday-indicator';
+            holidayIndicator.textContent = 'CLOSED';
+            holidayIndicator.style.fontSize = '10px';
+            holidayIndicator.style.color = '#f25757';
+            holidayIndicator.style.fontWeight = 'bold';
+            holidayIndicator.style.marginTop = '2px';
+            dateElement.appendChild(holidayIndicator);
         }
         
         dateElement.appendChild(dateNumberElement);
@@ -882,7 +893,7 @@ h2 {
     function updateMonthYearDisplay() {
       const firstDate = new Date(currentWeekStart);
       const lastDate = new Date(currentWeekStart);
-      lastDate.setDate(currentWeekStart.getDate() + 5); // For 6 days (Mon-Sat)
+      lastDate.setDate(currentWeekStart.getDate() + 6); // Show full week Sunday-Saturday
       
       let displayText = '';
       
@@ -905,11 +916,10 @@ h2 {
       // Only allow navigating to future weeks, not past weeks
       if (direction < 0) {
         // For backward navigation, ensure we don't go before the current week
-        const todayMonday = new Date(today);
-        const diff = today.getDay() === 0 ? -6 : 1 - today.getDay();
-        todayMonday.setDate(today.getDate() + diff);
+        const todaySunday = new Date(today);
+        todaySunday.setDate(today.getDate() - today.getDay()); // Go to current week's Sunday
         
-        if (newWeekStart < todayMonday) {
+        if (newWeekStart < todaySunday) {
           return; // Don't navigate to past weeks
         }
       }
@@ -1025,6 +1035,14 @@ h2 {
         continueButton.disabled = true;
         selectedTimeSlot = null;
         
+        // Check if selected date is a Sunday
+        if (selectedDate.getDay() === 0) {
+            noSlotsMessage.textContent = "Sorry, we are closed on Sundays. Please select another day.";
+            noSlotsMessage.style.display = 'block';
+            timeSlotsContainer.style.display = 'none';
+            return;
+        }
+        
         // Format selected date for checking booked slots - ENSURING YYYY-MM-DD FORMAT
         const year = selectedDate.getFullYear();
         const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
@@ -1075,19 +1093,17 @@ h2 {
             const displayMinute = minute.toString().padStart(2, '0');
             const timeDisplay = `${displayHour}:${displayMinute} ${period}`;
             
-            // Special case: Always disable 11:00 AM slots
-            const is11AM = (hour === 11 && minute === 0);
-            
-            // Check if this time slot is booked
-            const isBooked = isTimeSlotBooked(formattedDate, timeDisplay) || is11AM;
-            
+            // Create time slot element
             const timeSlot = document.createElement('div');
-            timeSlot.className = `time-slot${isBooked ? ' disabled' : ''}`;
             timeSlot.textContent = timeDisplay;
             timeSlot.dataset.time = timeDisplay;
             timeSlot.dataset.datetime = `${formattedDate} ${timeDisplay}`;
             
-            // Only add click handler if the slot is not booked and not 11:00 AM
+            // Check if this time slot is booked in the database
+            const isBooked = isTimeSlotBooked(formattedDate, timeDisplay);
+            timeSlot.className = `time-slot${isBooked ? ' disabled' : ''}`;
+            
+            // Only add click handler if the slot is not booked
             if (!isBooked) {
                 hasAvailableSlots = true;
                 

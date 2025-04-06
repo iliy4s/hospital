@@ -1,10 +1,94 @@
 <?php 
+// Start session with secure cookie settings
+ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_samesite', 'Lax');
 session_start();
+
+// Set security headers
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-XSS-Protection: 1; mode=block');
+
 require 'connect.php';
 
-// Enable error reporting for debugging
+// Disable error display in output and enable error logging
+ini_set('display_errors', 0);
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', 'php_errors.log');
+
+// Function to handle JSON responses with proper headers
+function sendJsonResponse($success, $message = '', $errors = []) {
+    // Clear any previous output
+    if (ob_get_length()) ob_clean();
+    
+    // Set security and cache headers
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Cache-Control: post-check=0, pre-check=0', false);
+    header('Pragma: no-cache');
+    
+    // Create response array
+    $response = [
+        'success' => $success,
+        'message' => $message,
+        'errors' => $errors
+    ];
+    
+    // Send JSON response
+    echo json_encode($response);
+    exit;
+}
+
+// Function to verify reCAPTCHA response with error handling
+function verifyRecaptcha($recaptchaResponse) {
+    try {
+        $secretKey = "6LcqswsrAAAAAH1DLq260LR_bRZ9ipIDp0QEzfKP"; // Updated server-side secret key
+        $url = "https://www.google.com/recaptcha/api/siteverify";
+        
+        // Use cURL instead of file_get_contents for better error handling
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => [
+                'secret' => $secretKey,
+                'response' => $recaptchaResponse
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_TIMEOUT => 10
+        ]);
+        
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($error) {
+            error_log("reCAPTCHA cURL Error: " . $error);
+            return false;
+        }
+        
+        if ($httpCode !== 200) {
+            error_log("reCAPTCHA HTTP Error: " . $httpCode);
+            return false;
+        }
+        
+        $responseData = json_decode($response, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("reCAPTCHA JSON Error: " . json_last_error_msg());
+            return false;
+        }
+        
+        return $responseData["success"] ?? false;
+    } catch (Exception $e) {
+        error_log("reCAPTCHA verification error: " . $e->getMessage());
+        return false;
+    }
+}
 
 // Initialize variables to retain form values after submission
 $patientFirstName = $patientLastName = $patientPreferredName = $contactNumber = $email = '';
@@ -51,14 +135,6 @@ function standardizeTimeFormat($timeStr) {
 
 // Standardize the appointment time format
 $appointmentTime = standardizeTimeFormat($appointmentTime);
-
-// Check if the time is 11:00 AM (which should be disabled)
-if (preg_match('/^11:00\s*AM$/i', $appointmentTime)) {
-    error_log("Registration attempt for disabled 11:00 AM slot: Date: $appointmentDate");
-    $_SESSION['booking_error'] = "Sorry, appointments at 11:00 AM are not available. Please select another time.";
-    header("Location: slot-booking.php");
-    exit;
-}
 
 // Check if the selected date and time are in the past or too close to current time
 try {
@@ -137,211 +213,186 @@ function test_input($data) {
 
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Add CSRF protection
-    if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token']) || 
-        $_SESSION['csrf_token'] !== $_POST['csrf_token']) {
-        $errors['csrf'] = 'Invalid form submission';
-        error_log("CSRF token validation failed");
-        exit;
-    }
-
-    // Add submission timestamp check to prevent double submission
-    if (isset($_SESSION['last_submission_time']) && 
-        time() - $_SESSION['last_submission_time'] < 5) {
-        $errors['submission'] = 'Please wait before submitting again.';
-    } else {
-        $_SESSION['last_submission_time'] = time();
+    try {
+        // Clear any previous output
+        if (ob_get_length()) ob_clean();
         
-        // Validate all required fields
-        $validations = [
-            'patientFirstName' => [
-                'value' => $_POST['patientFirstName'] ?? '',
-                'pattern' => "/^[a-zA-Z-' ]{1,50}$/",
-                'error' => 'Only letters, hyphens and spaces allowed'
-            ],
-            'patientLastName' => [
-                'value' => $_POST['patientLastName'] ?? '',
-                'pattern' => "/^[a-zA-Z-' ]{1,50}$/",
-                'error' => 'Only letters, hyphens and spaces allowed'
-            ],
-            'contactNumber' => [
-                'value' => $_POST['contactNumber'] ?? '',
-                'pattern' => "/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/",
-                'error' => 'Please enter a valid phone number'
-            ],
-            'email' => [
-                'value' => $_POST['email'] ?? '',
-                'validator' => function($email) {
-                    return filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($email) <= 254;
-                },
-                'error' => 'Please enter a valid email address'
-            ],
-            'reasonForAppointment' => [
-                'value' => $_POST['reasonForAppointment'] ?? '',
-                'validator' => function($reason) {
-                    return !empty($reason) && strlen($reason) <= 1000;
-                },
-                'error' => 'Reason is required and must be less than 1000 characters'
-            ]
+        // Initialize response array
+        $response = [
+            'success' => false,
+            'message' => '',
+            'errors' => []
         ];
+
+        // Verify reCAPTCHA first
+        $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         
-        // Process validations
-        foreach ($validations as $field => $config) {
-            if (empty($config['value'])) {
-                $errors[$field] = ucfirst($field) . ' is required';
-            } else {
-                ${$field} = test_input($config['value']);
-                
-                if (isset($config['pattern'])) {
-                    if (!preg_match($config['pattern'], ${$field})) {
-                        $errors[$field] = $config['error'];
-                    }
-                } else if (isset($config['validator'])) {
-                    if (!$config['validator'](${$field})) {
-                        $errors[$field] = $config['error'];
-                    }
-                }
-            }
+        if (empty($recaptchaResponse)) {
+            error_log("reCAPTCHA response missing");
+            sendJsonResponse(false, 'Please complete the reCAPTCHA verification.');
+            exit;
         }
-        
-        // Optional fields
-        if (!empty($_POST['patientPreferredName'])) {
-            $patientPreferredName = test_input($_POST['patientPreferredName']);
+
+        // Verify reCAPTCHA with improved error handling
+        $recaptchaResult = verifyRecaptcha($recaptchaResponse);
+        if (!$recaptchaResult) {
+            error_log("reCAPTCHA verification failed");
+            sendJsonResponse(false, 'reCAPTCHA verification failed. Please try again.');
+            exit;
         }
-        
-        if (!empty($_POST['preferredSpecialty'])) {
-            $preferredSpecialty = test_input($_POST['preferredSpecialty']);
-            if (!in_array($preferredSpecialty, $specialties)) {
-                $errors['preferredSpecialty'] = 'Please select a valid specialty';
-            }
+
+        // CSRF protection
+        if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token']) || 
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            error_log("CSRF token validation failed");
+            sendJsonResponse(false, 'Invalid form submission. Please refresh the page and try again.');
+            exit;
         }
+
+        // Process form data
+        $patientFirstName = test_input($_POST['patientFirstName'] ?? '');
+        $patientLastName = test_input($_POST['patientLastName'] ?? '');
+        $contactNumber = test_input($_POST['contactNumber'] ?? '');
+        $email = test_input($_POST['email'] ?? '');
+        $reasonForAppointment = test_input($_POST['reasonForAppointment'] ?? '');
+        $patientPreferredName = test_input($_POST['patientPreferredName'] ?? '');
+        $preferredSpecialty = test_input($_POST['preferredSpecialty'] ?? '');
+
+        // Validate required fields
+        $errors = [];
+        if (empty($patientFirstName) || !preg_match("/^[a-zA-Z-' ]{1,50}$/", $patientFirstName)) {
+            $errors['patientFirstName'] = 'First name is required and must contain only letters';
+        }
+        if (empty($patientLastName) || !preg_match("/^[a-zA-Z-' ]{1,50}$/", $patientLastName)) {
+            $errors['patientLastName'] = 'Last name is required and must contain only letters';
+        }
+        if (empty($contactNumber) || !preg_match("/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/", $contactNumber)) {
+            $errors['contactNumber'] = 'Please enter a valid phone number';
+        }
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Please enter a valid email address';
+        }
+        if (empty($reasonForAppointment)) {
+            $errors['reasonForAppointment'] = 'Reason for appointment is required';
+        }
+
+        // Process DOB
+        $dobMonth = $_POST['dobMonth'] ?? '';
+        $dobDay = $_POST['dobDay'] ?? '';
+        $dobYear = $_POST['dobYear'] ?? '';
         
-        // Date of birth validation
-        if (empty($_POST['dobMonth']) || empty($_POST['dobDay']) || empty($_POST['dobYear'])) {
-            $errors['dob'] = 'Complete date of birth is required';
+        if (!empty($dobMonth) && !empty($dobDay) && !empty($dobYear)) {
+            $dob = sprintf('%04d-%02d-%02d', $dobYear, $dobMonth, $dobDay);
         } else {
-            $dobMonth = $_POST['dobMonth'];
-            $dobDay = $_POST['dobDay'];
-            $dobYear = $_POST['dobYear'];
+            $dob = null;
+        }
+
+        // If there are validation errors, return them
+        if (!empty($errors)) {
+            sendJsonResponse(false, 'Please correct the errors and try again.', $errors);
+            exit;
+        }
+
+        try {
+            $conn->begin_transaction();
+
+            // Check slot availability
+            $checkSlotSql = "SELECT id FROM appointments 
+                           WHERE appointment_date = ? 
+                           AND appointment_time = ?
+                           AND status != 'cancelled'
+                           FOR UPDATE";
             
-            if (!checkdate($dobMonth, $dobDay, $dobYear)) {
-                $errors['dob'] = 'Please enter a valid date of birth';
-            } else {
-                $dob = $dobYear . '-' . str_pad($dobMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($dobDay, 2, '0', STR_PAD_LEFT);
+            $checkStmt = $conn->prepare($checkSlotSql);
+            if (!$checkStmt) {
+                throw new Exception("Database error: " . $conn->error);
             }
-        }
-        
-        // Appointment validation
-        if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $appointmentDate)) {
-            $errors['appointment'] = 'Invalid appointment date format';
-        }
-        
-        if (!preg_match("/^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(?:AM|PM)$/i", $appointmentTime)) {
-            $errors['appointment'] = 'Invalid appointment time format';
-        }
+            
+            $checkStmt->bind_param("ss", $appointmentDate, $appointmentTime);
+            $checkStmt->execute();
+            $result = $checkStmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                throw new Exception("Slot already booked");
+            }
 
-        // If no errors, proceed with database insertion
-        if (empty($errors)) {
+            // Generate booking reference
+            $bookingReference = 'APT-' . date('Ymd') . '-' . substr(uniqid(), -5);
+            
+            // Insert appointment
+            $insertSql = "INSERT INTO appointments (
+                appointment_date, appointment_time, patient_first_name, patient_last_name, 
+                patient_preferred_name, dob, contact_number, email, preferred_specialty, 
+                reason_for_appointment, status, created_at, booking_reference
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', NOW(), ?)";
+            
+            $stmt = $conn->prepare($insertSql);
+            if (!$stmt) {
+                throw new Exception("Database error: " . $conn->error);
+            }
+            
+            $stmt->bind_param(
+                "sssssssssss", 
+                $appointmentDate, $appointmentTime, $patientFirstName, $patientLastName, 
+                $patientPreferredName, $dob, $contactNumber, $email, $preferredSpecialty, 
+                $reasonForAppointment, $bookingReference
+            );
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to save appointment: " . $stmt->error);
+            }
+            
+            $newAppointmentId = $stmt->insert_id;
+            
+            // Log success and commit transaction
+            error_log("Appointment booked successfully - ID: $newAppointmentId, Ref: $bookingReference");
+            $conn->commit();
+            
+            // Store booking info in session
+            $_SESSION['booking_reference'] = $bookingReference;
+            $_SESSION['appointment_id'] = $newAppointmentId;
+            
+            // Clear appointment session data
+            unset($_SESSION['appointment_date']);
+            unset($_SESSION['appointment_time']);
+            
+            // Send confirmation email
             try {
-                $conn->begin_transaction();
-
-                // Double check slot availability with locking
-                $checkSlotSql = "SELECT id FROM appointments 
-                               WHERE appointment_date = ? 
-                               AND appointment_time = ?
-                               AND status != 'cancelled'
-                               FOR UPDATE";
-                
-                $checkStmt = $conn->prepare($checkSlotSql);
-                if (!$checkStmt) {
-                    throw new Exception("Failed to prepare slot check: " . $conn->error);
-                }
-                
-                $checkStmt->bind_param("ss", $appointmentDate, $appointmentTime);
-                $checkStmt->execute();
-                $result = $checkStmt->get_result();
-                
-                if ($result->num_rows > 0) {
-                    throw new Exception("Slot already booked");
-                }
-
-                // Generate booking reference
-                $bookingReference = 'APT-' . date('Ymd') . '-' . substr(uniqid(), -5);
-                
-                // Insert appointment
-                $insertSql = "INSERT INTO appointments (
-                    appointment_date, appointment_time, patient_first_name, patient_last_name, 
-                    patient_preferred_name, dob, contact_number, email, preferred_specialty, 
-                    reason_for_appointment, status, created_at, booking_reference
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', NOW(), ?)";
-                
-                $stmt = $conn->prepare($insertSql);
-                if (!$stmt) {
-                    throw new Exception("Failed to prepare insert: " . $conn->error);
-                }
-                
-                $stmt->bind_param(
-                    "ssssssssss", 
-                    $appointmentDate, $appointmentTime, $patientFirstName, $patientLastName, 
-                    $patientPreferredName, $dob, $contactNumber, $email, $preferredSpecialty, 
-                    $reasonForAppointment, $bookingReference
-                );
-                
-                if (!$stmt->execute()) {
-                    throw new Exception("Failed to insert appointment: " . $stmt->error);
-                }
-                
-                $newAppointmentId = $stmt->insert_id;
-                
-                // Log and commit
-                error_log("Appointment booked successfully - ID: $newAppointmentId, Ref: $bookingReference");
-                $conn->commit();
-                
-                // Store booking info in session
-                $_SESSION['booking_reference'] = $bookingReference;
-                $_SESSION['appointment_id'] = $newAppointmentId;
-                
-                // Clear form session data
-                unset($_SESSION['appointment_date']);
-                unset($_SESSION['appointment_time']);
-                
-                // Success flag
-                $formSubmitted = true;
-                
-                // Send confirmation email
-                try {
-                    sendConfirmationEmail($email, [
-                        'reference' => $bookingReference,
-                        'date' => $formattedDate,
-                        'time' => $appointmentTime,
-                        'name' => $patientFirstName
-                    ]);
-                } catch (Exception $e) {
-                    error_log("Failed to send confirmation email: " . $e->getMessage());
-                }
-                
+                sendConfirmationEmail($email, [
+                    'reference' => $bookingReference,
+                    'date' => $formattedDate,
+                    'time' => $appointmentTime,
+                    'name' => $patientFirstName
+                ]);
             } catch (Exception $e) {
-                $conn->rollback();
-                error_log("Appointment booking failed: " . $e->getMessage());
-                
-                if ($e->getMessage() === "Slot already booked") {
-                    $_SESSION['booking_error'] = "This slot was just taken. Please select another time.";
-                    header("Location: slot-booking.php");
-                    exit;
-                }
-                
-                $errors['database'] = "Failed to process your request. Please try again.";
+                error_log("Failed to send confirmation email: " . $e->getMessage());
+            }
+            
+            sendJsonResponse(true, 'Appointment booked successfully!');
+            
+        } catch (Exception $e) {
+            $conn->rollback();
+            error_log("Appointment booking failed: " . $e->getMessage());
+            
+            if ($e->getMessage() === "Slot already booked") {
+                sendJsonResponse(false, "This slot was just taken. Please select another time.");
+            } else {
+                sendJsonResponse(false, "An error occurred while processing your request. Please try again.");
             }
         }
+        
+    } catch (Exception $e) {
+        error_log("Form submission error: " . $e->getMessage());
+        sendJsonResponse(false, 'An error occurred while processing your request. Please try again.');
     }
+    exit;
 }
 
-// Generate CSRF token
+// Generate CSRF token if not exists
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Get list of months, days, and years for dropdowns
 $months = [
     1 => "January", 2 => "February", 3 => "March", 4 => "April",
     5 => "May", 6 => "June", 7 => "July", 8 => "August",
@@ -363,12 +414,44 @@ $specialties = [
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Appointment Request Form</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
     <link rel="stylesheet" href="css/animations.css"><?php // Include our custom animations ?>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Close button styles */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #7047d1;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .close-button:hover {
+            background-color: #5d3cb5;
+        }
+        
+        /* Position relative for the container to properly position the close button */
+        .bg-white {
+            position: relative;
+        }
+
+        /* Existing styles */
         .error-message {
             color: #dc3545;
             font-size: 0.9375rem;
@@ -575,6 +658,7 @@ $specialties = [
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen py-4">
     <div class="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg mx-4">
+        <button class="close-button" onclick="window.location.href='slot-booking.php';">×</button>
         <?php if ($formSubmitted): ?>
             <!-- Success message -->
             <div class="text-center py-8">
@@ -603,7 +687,7 @@ $specialties = [
                 <p class="text-gray-500 text-sm">You will be redirected to confirmation page...</p>
             </div>
             
-            <form id="registrationForm" method="POST" action="process_appointment.php">
+            <form id="registrationForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                 <!-- Hidden fields to preserve appointment information -->
                 <input type="hidden" name="appointmentDate" value="<?php echo htmlspecialchars($appointmentDate); ?>">
                 <input type="hidden" name="appointmentTime" value="<?php echo htmlspecialchars($appointmentTime); ?>">
@@ -759,16 +843,79 @@ $specialties = [
                         <?php echo $errors['appointmentSlot']; ?>
                     </div>
                 <?php endif; ?>
-                
-                <!-- Submit Button with loading state support -->
-                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold transition">
+
+                <!-- Add reCAPTCHA container -->
+                <div id="recaptcha-container" class="mb-3 flex justify-center"></div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold transition" disabled>
                     Submit Appointment Request
                 </button>
+
+                <!-- reCAPTCHA error message -->
+                <div class="error-message-container mt-2">
+                    <div class="error-message" id="recaptchaError" style="display: none;"></div>
+                </div>
             </form>
         <?php endif; ?>
     </div>
 
     <script>
+        let recaptchaWidget = null;
+        
+        // Initialize reCAPTCHA
+        function initRecaptcha() {
+            try {
+                recaptchaWidget = grecaptcha.render('recaptcha-container', {
+                    'sitekey': '6LcqswsrAAAAAK1IeRV4xJ8j3nLEnrKODY7hXldB',
+                    'callback': enableSubmit,
+                    'expired-callback': disableSubmit,
+                    'error-callback': handleRecaptchaError,
+                    'theme': 'light',
+                    'size': 'normal'
+                });
+                console.log('reCAPTCHA initialized successfully');
+            } catch (error) {
+                console.error('Error initializing reCAPTCHA:', error);
+                showRecaptchaError('Error loading reCAPTCHA. Please refresh the page.');
+            }
+        }
+        
+        // Load reCAPTCHA when the page is ready
+        window.onload = function() {
+            if (typeof grecaptcha === 'undefined') {
+                showRecaptchaError('reCAPTCHA failed to load. Please check your internet connection and refresh the page.');
+                return;
+            }
+            initRecaptcha();
+        };
+        
+        // reCAPTCHA callback functions
+        function enableSubmit(response) {
+            if (response) {
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('recaptchaError').style.display = 'none';
+                console.log('reCAPTCHA verified successfully');
+            }
+        }
+        
+        function disableSubmit() {
+            document.getElementById('submitBtn').disabled = true;
+            showRecaptchaError('reCAPTCHA verification expired. Please verify again.');
+        }
+        
+        function handleRecaptchaError() {
+            document.getElementById('submitBtn').disabled = true;
+            showRecaptchaError('reCAPTCHA verification failed. Please try again.');
+        }
+        
+        function showRecaptchaError(message) {
+            const errorElement = document.getElementById('recaptchaError');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            console.error('reCAPTCHA error:', message);
+        }
+        
         // Prevent form resubmission on page refresh
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
@@ -781,113 +928,140 @@ $specialties = [
             
             if (registrationForm) {
                 // Form submission with AJAX
-                registrationForm.addEventListener('submit', function(e) {
+                registrationForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
                     // Validate form before submission
                     if (!validateForm()) {
                         return false;
                     }
+
+                    // Verify reCAPTCHA
+                    const recaptchaResponse = grecaptcha.getResponse(recaptchaWidget);
+                    if (!recaptchaResponse) {
+                        showRecaptchaError('Please complete the reCAPTCHA verification.');
+                        return false;
+                    }
                     
-                    // Show loading state
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border-sm"></span> Processing...';
-                    
-                    // Clear previous messages
-                    formMessage.innerHTML = '';
-                    formMessage.className = 'hidden mb-4 p-4 rounded';
-                    
-                    // Get form data
-                    const formData = new FormData(this);
-                    
-                    // Send AJAX request with timeout
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-                    
-                    fetch('process_appointment.php', {
-                        method: 'POST',
-                        body: formData,
-                        signal: controller.signal
-                    })
-                    .then(response => {
-                        clearTimeout(timeoutId);
+                    try {
+                        // Show loading state
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<span class="spinner-border-sm"></span> Processing...';
+                        
+                        // Clear previous messages
+                        formMessage.innerHTML = '';
+                        formMessage.className = 'hidden mb-4 p-4 rounded';
+                        document.getElementById('recaptchaError').style.display = 'none';
+                        
+                        // Get form data
+                        const formData = new FormData(this);
+                        
+                        // Add reCAPTCHA response to form data
+                        formData.append('g-recaptcha-response', recaptchaResponse);
+                        
+                        // Send AJAX request
+                        const response = await fetch(registrationForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
                         if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
+                            throw new Error('Network response was not ok');
                         }
-                        return response.json();
-                    })
-                    .then(data => {
+
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType || !contentType.includes('application/json')) {
+                            throw new Error('Invalid response format');
+                        }
+
+                        const data = await response.json();
+                        
                         if (data.success) {
                             // Hide form and show success animation
-                            document.getElementById('registrationForm').style.display = 'none';
-                            document.getElementById('successAnimation').classList.remove('hidden');
+                            registrationForm.style.display = 'none';
+                            const successAnim = document.getElementById('successAnimation');
+                            if (successAnim) {
+                                successAnim.classList.remove('hidden');
+                            }
                             
                             // Show success message
-                            showFormMessage('success', 'Appointment booked successfully! Redirecting to confirmation page...');
+                            showFormMessage('success', data.message || 'Appointment booked successfully!');
                             
-                            // Redirect to confirmation page after a short delay (longer to see animation)
+                            // Redirect to confirmation page after animation
                             setTimeout(() => {
                                 window.location.href = 'confirmation.php';
                             }, 3000);
                         } else {
-                            // Show error message
-                            let errorMsg = data.message || 'An error occurred. Please try again.';
-                            
-                            // Add field-specific errors if any
-                            if (data.errors && Object.keys(data.errors).length > 0) {
-                                // Display field errors
-                                for (const [field, error] of Object.entries(data.errors)) {
-                                    const fieldElement = document.getElementById(field) || 
-                                                        document.querySelector(`[name="${field}"]`);
-                                    if (fieldElement) {
-                                        showError(fieldElement, error);
-                                    }
-                                }
-                                errorMsg = 'Please correct the errors and try again.';
-                            }
-                            
-                            showFormMessage('error', errorMsg);
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = 'Submit Appointment Request';
+                            handleFormErrors(data);
                         }
-                    })
-                    .catch(error => {
-                        clearTimeout(timeoutId);
+                    } catch (error) {
                         console.error('Error:', error);
-                        if (error.name === 'AbortError') {
-                            showFormMessage('error', 'Request timed out. The server is taking too long to respond.');
-                        } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-                            showFormMessage('error', 'Network error. Please check your internet connection and try again.');
-                        } else {
-                            showFormMessage('error', 'Error processing your request. Please try again or contact support.');
-                        }
+                        showFormMessage('error', 'An error occurred. Please try again.');
+                    } finally {
+                        // Reset form state
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = 'Submit Appointment Request';
-                    });
+                        grecaptcha.reset(recaptchaWidget);
+                    }
                 });
                 
                 // Add validation listeners to fields
                 addFieldValidationListeners();
+                
+                // Start slot availability checker
+                initSlotAvailabilityChecker();
+            }
+        });
+        
+        // Handle form errors
+        function handleFormErrors(data) {
+            if (data.errors && Object.keys(data.errors).length > 0) {
+                clearAllErrors();
+                
+                for (const [field, errorMessage] of Object.entries(data.errors)) {
+                    const fieldElement = document.getElementById(field);
+                    if (fieldElement) {
+                        showError(fieldElement, errorMessage);
+                    }
+                }
             }
             
-            // Check slot availability periodically
+            showFormMessage('error', data.message || 'Please correct the errors and try again.');
+        }
+        
+        // Initialize slot availability checker
+        function initSlotAvailabilityChecker() {
             <?php if (!$formSubmitted): ?>
-            let checkInterval = setInterval(function() {
-                fetch('check_slot.php?date=<?php echo urlencode($appointmentDate); ?>&time=<?php echo urlencode($appointmentTime); ?>&_=' + new Date().getTime())
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.available) {
-                            clearInterval(checkInterval);
-                            showFormMessage('error', 'This slot has just been booked by someone else. You will be redirected to select another time.');
-                            setTimeout(() => {
-                                window.location.href = 'slot-booking.php?error=slot_taken_during_form';
-                            }, 2000);
+            let checkInterval = setInterval(async function() {
+                try {
+                    const response = await fetch('check_slot.php?date=<?php echo urlencode($appointmentDate); ?>&time=<?php echo urlencode($appointmentTime); ?>&_=' + new Date().getTime(), {
+                        headers: {
+                            'Cache-Control': 'no-cache'
                         }
-                    })
-                    .catch(error => console.error('Error checking slot availability:', error));
-            }, 30000); // Check every 30 seconds
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    if (!data.available) {
+                        clearInterval(checkInterval);
+                        showFormMessage('error', 'This slot has just been booked by someone else. You will be redirected to select another time.');
+                        setTimeout(() => {
+                            window.location.href = 'slot-booking.php?error=slot_taken_during_form';
+                        }, 2000);
+                    }
+                } catch (error) {
+                    console.error('Error checking slot availability:', error);
+                    clearInterval(checkInterval);
+                }
+            }, 30000);
             <?php endif; ?>
-        });
+        }
         
         // Helper function to show form messages
         function showFormMessage(type, message) {
