@@ -28,13 +28,18 @@ function sendJsonResponse($success, $message = '', $errors = []) {
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     header('Cache-Control: post-check=0, pre-check=0', false);
     header('Pragma: no-cache');
+    header('Access-Control-Allow-Origin: same-origin');
     
     // Create response array
     $response = [
         'success' => $success,
         'message' => $message,
-        'errors' => $errors
+        'errors' => $errors,
+        'timestamp' => time()
     ];
+    
+    // Log response for debugging
+    error_log("Sending JSON response: " . json_encode($response));
     
     // Send JSON response
     echo json_encode($response);
@@ -44,7 +49,7 @@ function sendJsonResponse($success, $message = '', $errors = []) {
 // Function to verify reCAPTCHA response with error handling
 function verifyRecaptcha($recaptchaResponse) {
     try {
-        $secretKey = "6LeLowsrAAAAAH8SOuUim5r4OIR54qoIoqFNpqaJ";
+        $secretKey = "6LfniQwrAAAAACQeUZh84dkPvYtV5Fxa5baBHa-D"; // Updated server secret key
         $url = "https://www.google.com/recaptcha/api/siteverify";
         
         // Use cURL instead of file_get_contents for better error handling
@@ -82,6 +87,9 @@ function verifyRecaptcha($recaptchaResponse) {
             error_log("reCAPTCHA JSON Error: " . json_last_error_msg());
             return false;
         }
+        
+        // Log reCAPTCHA response for debugging
+        error_log("reCAPTCHA Response: " . print_r($responseData, true));
         
         return $responseData["success"] ?? false;
     } catch (Exception $e) {
@@ -224,6 +232,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'errors' => []
         ];
 
+        // Log POST data for debugging (excluding sensitive information)
+        $debugPostData = $_POST;
+        unset($debugPostData['g-recaptcha-response']); // Remove sensitive data for logging
+        error_log("Form submission received: " . json_encode($debugPostData));
+
         // Verify reCAPTCHA first
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         
@@ -233,6 +246,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
+        error_log("reCAPTCHA response received, verifying...");
         // Verify reCAPTCHA with improved error handling
         $recaptchaResult = verifyRecaptcha($recaptchaResponse);
         if (!$recaptchaResult) {
@@ -240,6 +254,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             sendJsonResponse(false, 'reCAPTCHA verification failed. Please try again.');
             exit;
         }
+        error_log("reCAPTCHA verification successful");
 
         // CSRF protection
         if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token']) || 
@@ -867,7 +882,7 @@ $specialties = [
         function initRecaptcha() {
             try {
                 recaptchaWidget = grecaptcha.render('recaptcha-container', {
-                    'sitekey': '6LeLowsrAAAAANw_lC-ZUYkv57SnkTC70ZRi4fEt',
+                    'sitekey': '6LfniQwrAAAAAILA5s7Wi65u0rIgH4IzwqIomfcN', // Updated client site key
                     'callback': enableSubmit,
                     'expired-callback': disableSubmit,
                     'error-callback': handleRecaptchaError,
@@ -959,25 +974,31 @@ $specialties = [
                         // Add reCAPTCHA response to form data
                         formData.append('g-recaptcha-response', recaptchaResponse);
                         
+                        console.log('Submitting form with reCAPTCHA response');
+                        
                         // Send AJAX request
                         const response = await fetch(registrationForm.action, {
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'Accept': 'application/json'
-                            }
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            credentials: 'same-origin'
                         });
 
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error(`Network response error: ${response.status} ${response.statusText}`);
                         }
 
                         const contentType = response.headers.get('content-type');
                         if (!contentType || !contentType.includes('application/json')) {
-                            throw new Error('Invalid response format');
+                            console.error('Invalid response format:', contentType);
+                            throw new Error('Invalid response format from server. Expected JSON.');
                         }
 
                         const data = await response.json();
+                        console.log('Server response:', data);
                         
                         if (data.success) {
                             // Hide form and show success animation
@@ -999,7 +1020,10 @@ $specialties = [
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        showFormMessage('error', 'An error occurred. Please try again.');
+                        showFormMessage('error', 'An error occurred while processing your request. Please try again.');
+                        
+                        // Log detailed error information
+                        console.error('Full error details:', error.stack || error);
                     } finally {
                         // Reset form state
                         submitBtn.disabled = false;

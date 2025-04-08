@@ -861,55 +861,42 @@ try {
             $daysInMonth = date('t', $firstDay);
             $dayOfWeek = date('w', $firstDay);
             
-            // Adjust Sunday from 0 to 7
-            if ($dayOfWeek == 0) $dayOfWeek = 7;
-            
             // Add days from previous month
             $prevMonth = date('t', strtotime('-1 month', $firstDay));
-            for ($i = $dayOfWeek - 1; $i > 0; $i--) {
+            for ($i = $dayOfWeek; $i > 0; $i--) {
               $prevMonthDate = date('Y-m-d', strtotime('-' . $i . ' days', $firstDay));
-              $isSunday = date('w', strtotime($prevMonthDate)) == 0;
-              
-              if (!$isSunday) {
-                echo '<div class="day other-month" data-date="' . $prevMonthDate . '">' . ($prevMonth - $i + 1) . '</div>';
-              }
+              echo '<div class="day other-month" data-date="' . $prevMonthDate . '">' . ($prevMonth - $i + 1) . '</div>';
             }
             
             // Current month days
             for ($day = 1; $day <= $daysInMonth; $day++) {
               $currentDate = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+              $isToday = $currentDate === date('Y-m-d');
+              $isSelected = $currentDate === $selectedDate;
+              $hasAppointments = isset($appointments[$currentDate]) && count($appointments[$currentDate]) > 0;
               $isSunday = date('w', strtotime($currentDate)) == 0;
               
-              if (!$isSunday) {
-                $isToday = $currentDate === date('Y-m-d');
-                $isSelected = $currentDate === $selectedDate;
-                $hasAppointments = isset($appointments[$currentDate]) && count($appointments[$currentDate]) > 0;
-                
-                $classes = 'day';
-                // Only add active and selected classes if this date is selected
-                // OR if it's today and no date has been selected yet
-                if ($isSelected || ($isToday && !isset($_GET['date']))) {
-                  $classes .= ' active selected';
-                }
-                if ($hasAppointments) {
-                  $classes .= ' has-appointments';
-                }
-                
-                echo '<div class="' . $classes . '" data-date="' . $currentDate . '">' . $day . '</div>';
+              $classes = 'day';
+              if ($isSelected || ($isToday && !isset($_GET['date']))) {
+                $classes .= ' active selected';
               }
+              if ($hasAppointments) {
+                $classes .= ' has-appointments';
+              }
+              if ($isSunday) {
+                $classes .= ' sunday';
+              }
+              
+              echo '<div class="' . $classes . '" data-date="' . $currentDate . '">' . $day . '</div>';
             }
             
             // Add days from next month
             $lastDay = mktime(0, 0, 0, $month, $daysInMonth, $year);
-            $remainingCells = 6 * 6 - ($dayOfWeek - 1 + $daysInMonth); // 6 rows x 6 columns (excluding Sunday)
+            $remainingDays = 42 - ($dayOfWeek + $daysInMonth); // 6 rows x 7 columns
             
-            for ($i = 1; $i <= $remainingCells; $i++) {
+            for ($i = 1; $i <= $remainingDays; $i++) {
               $nextMonthDate = date('Y-m-d', strtotime('+' . $i . ' days', $lastDay));
-              $isSunday = date('w', strtotime($nextMonthDate)) == 0;
-              
-              if (!$isSunday) {
-                echo '<div class="day other-month" data-date="' . $nextMonthDate . '">' . $i . '</div>';
-              }
+              echo '<div class="day other-month" data-date="' . $nextMonthDate . '">' . $i . '</div>';
             }
             ?>
           </div>
