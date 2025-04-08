@@ -44,7 +44,7 @@ function sendJsonResponse($success, $message = '', $errors = []) {
 // Function to verify reCAPTCHA response with error handling
 function verifyRecaptcha($recaptchaResponse) {
     try {
-        $secretKey = "6LcqswsrAAAAAH1DLq260LR_bRZ9ipIDp0QEzfKP"; // Updated server-side secret key
+        $secretKey = "6LeLowsrAAAAAH8SOuUim5r4OIR54qoIoqFNpqaJ";
         $url = "https://www.google.com/recaptcha/api/siteverify";
         
         // Use cURL instead of file_get_contents for better error handling
@@ -867,7 +867,7 @@ $specialties = [
         function initRecaptcha() {
             try {
                 recaptchaWidget = grecaptcha.render('recaptcha-container', {
-                    'sitekey': '6LcqswsrAAAAAK1IeRV4xJ8j3nLEnrKODY7hXldB',
+                    'sitekey': '6LeLowsrAAAAANw_lC-ZUYkv57SnkTC70ZRi4fEt',
                     'callback': enableSubmit,
                     'expired-callback': disableSubmit,
                     'error-callback': handleRecaptchaError,
